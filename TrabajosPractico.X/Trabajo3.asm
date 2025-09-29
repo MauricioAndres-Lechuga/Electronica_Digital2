@@ -10,8 +10,8 @@ CBLOCK 0x20
     DELAY1_150ms
     DELAY2_150ms
     DELAY3_150ms
-    DELAY1_5ms
-    DELAY2_5ms
+    DELAY1_2ms
+    DELAY2_2ms
     CONT
     UNI
     DECS
@@ -57,29 +57,29 @@ LOOP_DECS
 LOOP_UNI
     CLRF    CONT
 LOOP_M
-    BCF	    PORTE,0
-    BSF	    PORTE,1
-    BSF	    PORTE,2
+    BSF	    PORTE,0
+    BCF	    PORTE,1
+    BCF	    PORTE,2
     MOVF    UNI,W
     CALL    TABLA_DECO
     MOVWF   PORTB
-    CALL    DELAY_5ms
-    BSF	    PORTE,0
-    BCF	    PORTE,1
-    BSF	    PORTE,2
+    CALL    DELAY_2ms
+    BCF	    PORTE,0
+    BSF	    PORTE,1
+    BCF	    PORTE,2
     MOVF    DECS,W
     CALL    TABLA_DECO
     MOVWF   PORTB
-    CALL    DELAY_5ms
-    BSF	    PORTE,0
-    BSF	    PORTE,1
-    BCF	    PORTE,2
+    CALL    DELAY_2ms
+    BCF	    PORTE,0
+    BCF	    PORTE,1
+    BSF	    PORTE,2
     MOVF    CEN,W
     CALL    TABLA_DECO
     MOVWF   PORTB
-    CALL    DELAY_5ms
+    CALL    DELAY_2ms
     INCF    CONT
-    MOVLW   .3
+    MOVLW   .17
     SUBWF   CONT,W
     BTFSS   STATUS,Z
     GOTO    LOOP_M
@@ -101,9 +101,9 @@ FINALIZACION
     GOTO    LOOP_UNI
     
 LOOP_PARPADEO
-	BCF	PORTE,0
-	BCF	PORTE,1
-	BCF	PORTE,2
+	BSF	PORTE,0
+	BSF	PORTE,1
+	BSF	PORTE,2
 	MOVLW	b'00111111'
 	MOVWF	PORTB
 	CALL	DELAY_150ms
@@ -125,19 +125,20 @@ TABLA_DECO
     RETLW b'01101111'  ; 9
 
 
-DELAY_5ms
-    MOVLW   D'250'        ; CARGA CONTADOR 1
-    MOVWF   DELAY1_5ms
-LOOP1_5ms
-    MOVLW   D'20'         ; CARGA CONTADOR 2
-    MOVWF   DELAY2_5ms
-LOOP2_5ms
-    NOP                   ; AJUSTE FINO
-    DECFSZ  DELAY2_5ms, F
-    GOTO    LOOP2_5ms
-    DECFSZ  DELAY1_5ms, F
-    GOTO    LOOP1_5ms
+DELAY_2ms
+    MOVLW   D'80'         
+    MOVWF   DELAY1_2ms
+LOOP1_2ms
+    MOVLW   D'8'          
+    MOVWF   DELAY2_2ms
+LOOP2_2ms
+    NOP
+    DECFSZ  DELAY2_2ms, F
+    GOTO    LOOP2_2ms
+    DECFSZ  DELAY1_2ms, F
+    GOTO    LOOP1_2ms
     RETURN
+
     
 DELAY_150ms
     MOVLW   D'75'

@@ -1,5 +1,5 @@
 MPLINK 5.09, LINKER
-Linker Map File - Created Sun Sep 28 20:38:36 2025
+Linker Map File - Created Mon Sep 29 17:22:37 2025
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -24,39 +24,39 @@ Linker Map File - Created Sun Sep 28 20:38:36 2025
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-              DELAY_150ms   0x000065    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                DELAY_5ms   0x00005b    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-             FINALIZACION   0x000044    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                   INICIO   0x000006    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-              LOOP1_150ms   0x000067    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                LOOP1_5ms   0x00005d    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-              LOOP2_150ms   0x000069    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                LOOP2_5ms   0x00005f    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-              LOOP3_150ms   0x00006b    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                LOOP_DECS   0x000019    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                   LOOP_M   0x00001f    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-            LOOP_PARPADEO   0x000047    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                 LOOP_UNI   0x00001e    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-               TABLA_DECO   0x000050    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
+              DELAY_150ms   0x000065    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                DELAY_2ms   0x00005b    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+             FINALIZACION   0x000044    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                   INICIO   0x000006    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+              LOOP1_150ms   0x000067    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                LOOP1_2ms   0x00005d    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+              LOOP2_150ms   0x000069    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                LOOP2_2ms   0x00005f    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+              LOOP3_150ms   0x00006b    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                LOOP_DECS   0x000019    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                   LOOP_M   0x00001f    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+            LOOP_PARPADEO   0x000047    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                 LOOP_UNI   0x00001e    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+               TABLA_DECO   0x000050    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                   INICIO   0x000006    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                LOOP_DECS   0x000019    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                 LOOP_UNI   0x00001e    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                   LOOP_M   0x00001f    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-             FINALIZACION   0x000044    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-            LOOP_PARPADEO   0x000047    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-               TABLA_DECO   0x000050    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                DELAY_5ms   0x00005b    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                LOOP1_5ms   0x00005d    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-                LOOP2_5ms   0x00005f    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-              DELAY_150ms   0x000065    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-              LOOP1_150ms   0x000067    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-              LOOP2_150ms   0x000069    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
-              LOOP3_150ms   0x00006b    program     static C:\Users\Mauri\MPLABXProjects\Digital2\TrabajosPractico.X\Trabajo3.asm
+                   INICIO   0x000006    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                LOOP_DECS   0x000019    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                 LOOP_UNI   0x00001e    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                   LOOP_M   0x00001f    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+             FINALIZACION   0x000044    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+            LOOP_PARPADEO   0x000047    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+               TABLA_DECO   0x000050    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                DELAY_2ms   0x00005b    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                LOOP1_2ms   0x00005d    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+                LOOP2_2ms   0x00005f    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+              DELAY_150ms   0x000065    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+              LOOP1_150ms   0x000067    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+              LOOP2_150ms   0x000069    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
+              LOOP3_150ms   0x00006b    program     static C:\Users\Mauricio\MPLABXProjects\TrabajosPractico.X\Trabajo3.asm
 
 

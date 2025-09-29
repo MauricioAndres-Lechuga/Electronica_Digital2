@@ -1,4 +1,4 @@
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  1
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -29,8 +29,8 @@ Warning[205]: Found directive in column 1. (CBLOCK)
   00000020            00010     DELAY1_150ms
   00000021            00011     DELAY2_150ms
   00000022            00012     DELAY3_150ms
-  00000023            00013     DELAY1_5ms
-  00000024            00014     DELAY2_5ms
+  00000023            00013     DELAY1_2ms
+  00000024            00014     DELAY2_2ms
   00000025            00015     CONT
   00000026            00016     UNI
   00000027            00017     DECS
@@ -57,7 +57,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0009   1288           00034     BCF     ANSEL,5
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  2
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -93,36 +93,36 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 001E                  00057 LOOP_UNI
 001E   01A5           00058     CLRF    CONT
 001F                  00059 LOOP_M
-001F   1009           00060     BCF     PORTE,0
-0020   1489           00061     BSF     PORTE,1
-0021   1509           00062     BSF     PORTE,2
+001F   1409           00060     BSF     PORTE,0
+0020   1089           00061     BCF     PORTE,1
+0021   1109           00062     BCF     PORTE,2
 0022   0826           00063     MOVF    UNI,W
 0023   2???           00064     CALL    TABLA_DECO
 0024   0086           00065     MOVWF   PORTB
-0025   2???           00066     CALL    DELAY_5ms
-0026   1409           00067     BSF     PORTE,0
-0027   1089           00068     BCF     PORTE,1
-0028   1509           00069     BSF     PORTE,2
+0025   2???           00066     CALL    DELAY_2ms
+0026   1009           00067     BCF     PORTE,0
+0027   1489           00068     BSF     PORTE,1
+0028   1109           00069     BCF     PORTE,2
 0029   0827           00070     MOVF    DECS,W
 002A   2???           00071     CALL    TABLA_DECO
 002B   0086           00072     MOVWF   PORTB
-002C   2???           00073     CALL    DELAY_5ms
-002D   1409           00074     BSF     PORTE,0
-002E   1489           00075     BSF     PORTE,1
-002F   1109           00076     BCF     PORTE,2
+002C   2???           00073     CALL    DELAY_2ms
+002D   1009           00074     BCF     PORTE,0
+002E   1089           00075     BCF     PORTE,1
+002F   1509           00076     BSF     PORTE,2
 0030   0828           00077     MOVF    CEN,W
 0031   2???           00078     CALL    TABLA_DECO
 0032   0086           00079     MOVWF   PORTB
-0033   2???           00080     CALL    DELAY_5ms
+0033   2???           00080     CALL    DELAY_2ms
 Message[305]: Using default destination of 1 (file).
 0034   0AA5           00081     INCF    CONT
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  3
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0035   3001           00082     MOVLW   .1
+0035   3011           00082     MOVLW   .17
 0036   0225           00083     SUBWF   CONT,W
 0037   1D03           00084     BTFSS   STATUS,Z
 0038   2???           00085     GOTO    LOOP_M
@@ -144,9 +144,9 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0046   2???           00101     GOTO    LOOP_UNI
                       00102     
 0047                  00103 LOOP_PARPADEO
-0047   1009           00104         BCF     PORTE,0
-0048   1089           00105         BCF     PORTE,1
-0049   1109           00106         BCF     PORTE,2
+0047   1409           00104         BSF     PORTE,0
+0048   1489           00105         BSF     PORTE,1
+0049   1509           00106         BSF     PORTE,2
 004A   303F           00107         MOVLW   b'00111111'
 004B   0086           00108         MOVWF   PORTB
 004C   2???           00109         CALL    DELAY_150ms
@@ -168,47 +168,48 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 005A   346F           00125     RETLW b'01101111'  ; 9
                       00126 
                       00127 
-005B                  00128 DELAY_5ms
-005B   30FA           00129     MOVLW   D'250'        ; CARGA CONTADOR 1
-005C   00A3           00130     MOVWF   DELAY1_5ms
-005D                  00131 LOOP1_5ms
-005D   3014           00132     MOVLW   D'20'         ; CARGA CONTADOR 2
-005E   00A4           00133     MOVWF   DELAY2_5ms
-005F                  00134 LOOP2_5ms
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  4
+005B                  00128 DELAY_2ms
+005B   3050           00129     MOVLW   D'80'         
+005C   00A3           00130     MOVWF   DELAY1_2ms
+005D                  00131 LOOP1_2ms
+005D   3008           00132     MOVLW   D'8'          
+005E   00A4           00133     MOVWF   DELAY2_2ms
+005F                  00134 LOOP2_2ms
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-005F   0000           00135     NOP                   ; AJUSTE FINO
-0060   0BA4           00136     DECFSZ  DELAY2_5ms, F
-0061   2???           00137     GOTO    LOOP2_5ms
-0062   0BA3           00138     DECFSZ  DELAY1_5ms, F
-0063   2???           00139     GOTO    LOOP1_5ms
+005F   0000           00135     NOP
+0060   0BA4           00136     DECFSZ  DELAY2_2ms, F
+0061   2???           00137     GOTO    LOOP2_2ms
+0062   0BA3           00138     DECFSZ  DELAY1_2ms, F
+0063   2???           00139     GOTO    LOOP1_2ms
 0064   0008           00140     RETURN
-                      00141     
-0065                  00142 DELAY_150ms
-0065   304B           00143     MOVLW   D'75'
-0066   00A0           00144     MOVWF   DELAY1_150ms
-0067                  00145 LOOP1_150ms
-0067   30C8           00146     MOVLW   D'200'
-0068   00A1           00147     MOVWF   DELAY2_150ms
-0069                  00148 LOOP2_150ms
-0069   300A           00149     MOVLW   D'10'
-006A   00A2           00150     MOVWF   DELAY3_150ms
-006B                  00151 LOOP3_150ms
-006B   0BA2           00152     DECFSZ  DELAY3_150ms, F
-006C   2???           00153     GOTO    LOOP3_150ms
-006D   0BA1           00154     DECFSZ  DELAY2_150ms, F
-006E   2???           00155     GOTO    LOOP2_150ms
-006F   0BA0           00156     DECFSZ  DELAY1_150ms, F
-0070   2???           00157     GOTO    LOOP1_150ms
-0071   0008           00158     RETURN
-                      00159 
+                      00141 
+                      00142     
+0065                  00143 DELAY_150ms
+0065   304B           00144     MOVLW   D'75'
+0066   00A0           00145     MOVWF   DELAY1_150ms
+0067                  00146 LOOP1_150ms
+0067   30C8           00147     MOVLW   D'200'
+0068   00A1           00148     MOVWF   DELAY2_150ms
+0069                  00149 LOOP2_150ms
+0069   300A           00150     MOVLW   D'10'
+006A   00A2           00151     MOVWF   DELAY3_150ms
+006B                  00152 LOOP3_150ms
+006B   0BA2           00153     DECFSZ  DELAY3_150ms, F
+006C   2???           00154     GOTO    LOOP3_150ms
+006D   0BA1           00155     DECFSZ  DELAY2_150ms, F
+006E   2???           00156     GOTO    LOOP2_150ms
+006F   0BA0           00157     DECFSZ  DELAY1_150ms, F
+0070   2???           00158     GOTO    LOOP1_150ms
+0071   0008           00159     RETURN
+                      00160 
 Warning[205]: Found directive in column 1. (END)
-2FF1                  00160 END
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  5
+2FF1                  00161 END
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  5
 
 
 SYMBOL TABLE
@@ -267,7 +268,7 @@ BRG6                              00000006
 BRG7                              00000007
 BRG8                              00000000
 BRG9                              00000001
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  6
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  6
 
 
 SYMBOL TABLE
@@ -326,7 +327,7 @@ CEN                               00000028
 CHS0                              00000002
 CHS1                              00000003
 CHS2                              00000004
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  7
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  7
 
 
 SYMBOL TABLE
@@ -350,12 +351,12 @@ DC2B0                             00000004
 DC2B1                             00000005
 DECS                              00000027
 DELAY1_150ms                      00000020
-DELAY1_5ms                        00000023
+DELAY1_2ms                        00000023
 DELAY2_150ms                      00000021
-DELAY2_5ms                        00000024
+DELAY2_2ms                        00000024
 DELAY3_150ms                      00000022
 DELAY_150ms                       00000065
-DELAY_5ms                         0000005B
+DELAY_2ms                         0000005B
 D_A                               00000005
 D_NOT_A                           00000005
 ECCPAS                            0000009C
@@ -385,7 +386,7 @@ GO_DONE                           00000001
 GO_NOT_DONE                       00000001
 HTS                               00000002
 I2C_DATA                          00000005
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  8
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  8
 
 
 SYMBOL TABLE
@@ -414,9 +415,9 @@ IRCF1                             00000005
 IRCF2                             00000006
 IRP                               00000007
 LOOP1_150ms                       00000067
-LOOP1_5ms                         0000005D
+LOOP1_2ms                         0000005D
 LOOP2_150ms                       00000069
-LOOP2_5ms                         0000005F
+LOOP2_2ms                         0000005F
 LOOP3_150ms                       0000006B
 LOOP_DECS                         00000019
 LOOP_M                            0000001F
@@ -444,7 +445,7 @@ NOT_POR                           00000001
 NOT_RBPU                          00000007
 NOT_RC8                           00000006
 NOT_T1SYNC                        00000002
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE  9
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE  9
 
 
 SYMBOL TABLE
@@ -503,7 +504,7 @@ R                                 00000002
 RA0                               00000000
 RA1                               00000001
 RA2                               00000002
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE 10
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE 10
 
 
 SYMBOL TABLE
@@ -562,7 +563,7 @@ RX9                               00000006
 RX9D                              00000000
 R_NOT_W                           00000002
 R_W                               00000002
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE 11
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE 11
 
 
 SYMBOL TABLE
@@ -621,7 +622,7 @@ T2CKPS0                           00000000
 T2CKPS1                           00000001
 T2CON                             00000012
 TABLA_DECO                        00000050
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE 12
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE 12
 
 
 SYMBOL TABLE
@@ -680,7 +681,7 @@ TRISD2                            00000002
 TRISD3                            00000003
 TRISD4                            00000004
 TRISD5                            00000005
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE 13
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE 13
 
 
 SYMBOL TABLE
@@ -739,7 +740,7 @@ WPUB3                             00000003
 WPUB4                             00000004
 WPUB5                             00000005
 WPUB6                             00000006
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE 14
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE 14
 
 
 SYMBOL TABLE
@@ -798,7 +799,7 @@ _INTOSC                           00003FFD
 _INTOSCIO                         00003FFC
 _INTRC_OSC_CLKOUT                 00003FFD
 _INTRC_OSC_NOCLKOUT               00003FFC
-MPASM 5.81                      TRABAJO3.ASM   9-28-2025  20:38:35         PAGE 15
+MPASM 5.81                      TRABAJO3.ASM   9-29-2025  17:22:37         PAGE 15
 
 
 SYMBOL TABLE
