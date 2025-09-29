@@ -20,10 +20,8 @@ ENDC
 
 ;*** Inicialización de Programa ***     
 ORG 0x00
-    GOTO INICIO       ; reset vector
-
-ORG 0x05          ; vector de interrupción
-    RETFIE            ; (si no usás interrupciones)
+    GOTO INICIO       
+ORG 0x05          
 
 ;*** Inicio del programa ***
 INICIO
