@@ -51,10 +51,55 @@ LOOP_DECS
     MOVLW   .10
     SUBWF   DECS,W
     BTFSC   STATUS,Z
-    GOTO    FINALIZACION
+    GOTO    CENTENAS
 LOOP_UNI
     CLRF    CONT
-LOOP_M
+LOOP_MUESTREO
+    CALL    MUESTREO
+    INCF    CONT,F
+    MOVLW   .17
+    SUBWF   CONT,W
+    BTFSS   STATUS,Z
+    GOTO    LOOP_MUESTREO
+    CALL    TEST_100
+    INCF    UNI,F
+    MOVLW   .10
+    SUBWF   UNI,W
+    BTFSS   STATUS,Z
+    GOTO    LOOP_UNI
+    CLRF    UNI
+    GOTO    LOOP_DECS
+    
+CENTENAS
+    CLRF    DECS
+    INCF    CEN,F
+    GOTO    LOOP_UNI
+    
+LOOP_PARPADEO
+	BSF	PORTE,0
+	BSF	PORTE,1
+	BSF	PORTE,2
+	MOVLW	b'00111111'
+	MOVWF	PORTB
+	CALL	DELAY_150ms
+	CLRF	PORTB
+	CALL	DELAY_150ms
+GOTO	LOOP_PARPADEO
+;*** Tabla de decodificación usando ADDWF PCL,F ***
+TABLA_DECO
+    ADDWF PCL,F        ; sumamos W (CONT) al PCL
+    RETLW b'00111111'  ; 0
+    RETLW b'00000110'  ; 1
+    RETLW b'01011011'  ; 2
+    RETLW b'01001111'  ; 3
+    RETLW b'01100110'  ; 4
+    RETLW b'01101101'  ; 5
+    RETLW b'01111101'  ; 6
+    RETLW b'00000111'  ; 7
+    RETLW b'01111111'  ; 8
+    RETLW b'01101111'  ; 9
+
+MUESTREO
     BSF	    PORTE,0
     BCF	    PORTE,1
     BCF	    PORTE,2
@@ -75,53 +120,16 @@ LOOP_M
     MOVF    CEN,W
     CALL    TABLA_DECO
     MOVWF   PORTB
-    CALL    DELAY_2ms
-    INCF    CONT
-    MOVLW   .17
-    SUBWF   CONT,W
-    BTFSS   STATUS,Z
-    GOTO    LOOP_M
-    MOVLW   .1
-    SUBWF   CEN,W
+    CALL    DELAY_2ms 
+    RETURN
+    
+TEST_100
+    MOVF    CEN,W
+    SUBLW   .1          ; ¿CEN == 1?
     BTFSC   STATUS,Z
     GOTO    LOOP_PARPADEO
-    INCF    UNI,F
-    MOVLW   .10
-    SUBWF   UNI,W
-    BTFSS   STATUS,Z
-    GOTO    LOOP_UNI
-    CLRF    UNI
-    GOTO    LOOP_DECS
+    RETURN
     
-FINALIZACION
-    CLRF    DECS
-    INCF    CEN,F
-    GOTO    LOOP_UNI
-    
-LOOP_PARPADEO
-	BSF	PORTE,0
-	BSF	PORTE,1
-	BSF	PORTE,2
-	MOVLW	b'00111111'
-	MOVWF	PORTB
-	CALL	DELAY_150ms
-	CLRF	PORTB
-	CALL	DELAY_150ms
-	GOTO	LOOP_PARPADEO
-;*** Tabla de decodificación usando ADDWF PCL,F ***
-TABLA_DECO
-    ADDWF PCL,F        ; sumamos W (CONT) al PCL
-    RETLW b'00111111'  ; 0
-    RETLW b'00000110'  ; 1
-    RETLW b'01011011'  ; 2
-    RETLW b'01001111'  ; 3
-    RETLW b'01100110'  ; 4
-    RETLW b'01101101'  ; 5
-    RETLW b'01111101'  ; 6
-    RETLW b'00000111'  ; 7
-    RETLW b'01111111'  ; 8
-    RETLW b'01101111'  ; 9
-
 
 DELAY_2ms
     MOVLW   D'80'         
