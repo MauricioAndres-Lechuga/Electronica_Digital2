@@ -33,12 +33,12 @@ INICIO
     BCF	    ANSEL,6
     BCF	    ANSEL,7
     BCF     STATUS,RP1        ; Banco 1
-    CLRF    TRISB             ; PORTB salida
+    CLRF    TRISD             ; PORTB salida
     BCF	    TRISE,0
     BCF	    TRISE,1
     BCF	    TRISE,2
     BCF     STATUS,RP0        ; Banco 0
-    CLRF    PORTB
+    CLRF    PORTD
     CLRF    PORTE
     CLRF    UNI
     CLRF    DECS
@@ -80,9 +80,9 @@ LOOP_PARPADEO
 	BSF	PORTE,1
 	BSF	PORTE,2
 	MOVLW	b'00111111'
-	MOVWF	PORTB
+	MOVWF	PORTD
 	CALL	DELAY_150ms
-	CLRF	PORTB
+	CLRF	PORTD
 	CALL	DELAY_150ms
 GOTO	LOOP_PARPADEO
 ;*** Tabla de decodificación usando ADDWF PCL,F ***
@@ -105,21 +105,21 @@ MUESTREO
     BCF	    PORTE,2
     MOVF    UNI,W
     CALL    TABLA_DECO
-    MOVWF   PORTB
+    MOVWF   PORTD
     CALL    DELAY_2ms
     BCF	    PORTE,0
     BSF	    PORTE,1
     BCF	    PORTE,2
     MOVF    DECS,W
     CALL    TABLA_DECO
-    MOVWF   PORTB
+    MOVWF   PORTD
     CALL    DELAY_2ms
     BCF	    PORTE,0
     BCF	    PORTE,1
     BSF	    PORTE,2
     MOVF    CEN,W
     CALL    TABLA_DECO
-    MOVWF   PORTB
+    MOVWF   PORTD
     CALL    DELAY_2ms 
     RETURN
     

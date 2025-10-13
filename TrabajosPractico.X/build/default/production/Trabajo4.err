@@ -1,0 +1,20 @@
+Warning[205] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 2 : Found directive in column 1. (LIST)
+Warning[205] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 6 : Found directive in column 1. (__CONFIG)
+Warning[205] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 9 : Found directive in column 1. (CBLOCK)
+Warning[205] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 23 : Found directive in column 1. (ENDC)
+Warning[205] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 26 : Found directive in column 1. (ORG)
+Warning[203] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 27 : Found opcode in column 1. (GOTO)
+Warning[205] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 28 : Found directive in column 1. (ORG)
+Warning[203] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 29 : Found opcode in column 1. (GOTO)
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 36 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 37 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 38 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 39 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 42 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 43 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 44 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 45 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 46 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 49 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 53 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Warning[205] C:\USERS\MAURICIO\MPLABXPROJECTS\TRABAJOSPRACTICO.X\TRABAJO4.ASM 326 : Found directive in column 1. (END)
