@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=Ejercicio_5-2.asm
+SOURCEFILES_QUOTED_IF_SPACED=Ejercicio_5-2.asm Ej_Sim_2.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Ejercicio_5-2.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/Ejercicio_5-2.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Ejercicio_5-2.o ${OBJECTDIR}/Ej_Sim_2.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/Ejercicio_5-2.o.d ${OBJECTDIR}/Ej_Sim_2.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/Ejercicio_5-2.o
+OBJECTFILES=${OBJECTDIR}/Ejercicio_5-2.o ${OBJECTDIR}/Ej_Sim_2.o
 
 # Source Files
-SOURCEFILES=Ejercicio_5-2.asm
+SOURCEFILES=Ejercicio_5-2.asm Ej_Sim_2.asm
 
 
 CFLAGS=
@@ -102,6 +102,14 @@ ${OBJECTDIR}/Ejercicio_5-2.o: Ejercicio_5-2.asm  nbproject/Makefile-${CND_CONF}.
 	@${DEP_GEN} -d "${OBJECTDIR}/Ejercicio_5-2.o"
 	@${FIXDEPS} "${OBJECTDIR}/Ejercicio_5-2.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
+${OBJECTDIR}/Ej_Sim_2.o: Ej_Sim_2.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Ej_Sim_2.o.d 
+	@${RM} ${OBJECTDIR}/Ej_Sim_2.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Ej_Sim_2.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_SIMULATOR=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Ej_Sim_2.lst\" -e\"${OBJECTDIR}/Ej_Sim_2.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Ej_Sim_2.o\" \"Ej_Sim_2.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/Ej_Sim_2.o"
+	@${FIXDEPS} "${OBJECTDIR}/Ej_Sim_2.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 else
 ${OBJECTDIR}/Ejercicio_5-2.o: Ejercicio_5-2.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -110,6 +118,14 @@ ${OBJECTDIR}/Ejercicio_5-2.o: Ejercicio_5-2.asm  nbproject/Makefile-${CND_CONF}.
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Ejercicio_5-2.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Ejercicio_5-2.lst\" -e\"${OBJECTDIR}/Ejercicio_5-2.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Ejercicio_5-2.o\" \"Ejercicio_5-2.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/Ejercicio_5-2.o"
 	@${FIXDEPS} "${OBJECTDIR}/Ejercicio_5-2.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
+${OBJECTDIR}/Ej_Sim_2.o: Ej_Sim_2.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Ej_Sim_2.o.d 
+	@${RM} ${OBJECTDIR}/Ej_Sim_2.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Ej_Sim_2.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Ej_Sim_2.lst\" -e\"${OBJECTDIR}/Ej_Sim_2.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Ej_Sim_2.o\" \"Ej_Sim_2.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/Ej_Sim_2.o"
+	@${FIXDEPS} "${OBJECTDIR}/Ej_Sim_2.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 endif
 

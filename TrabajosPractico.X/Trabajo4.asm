@@ -17,7 +17,6 @@ CBLOCK 0x20
     UNI
     DECS
     CEN
-    ISR_TECL
     NTECL
     NTECL_CONT
 ENDC  

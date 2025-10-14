@@ -503,6 +503,8 @@
         <mpasmsuite>
         </mpasmsuite>
       </item>
+      <item path="Trabajo4.asm" ex="true" overriding="false">
+      </item>
       <mpasmsuite>
         <property key="absolute-mode" value="false"/>
         <property key="eeprom-width" value="8"/>
