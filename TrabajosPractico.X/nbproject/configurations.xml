@@ -16,6 +16,7 @@
       <itemPath>Trabajo1.asm</itemPath>
       <itemPath>Trabajo2.asm</itemPath>
       <itemPath>Trabajo4.asm</itemPath>
+      <itemPath>Trabajo5INTEGRADOR.asm</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -502,6 +503,8 @@
         </MPASMWIN-LD>
         <mpasmsuite>
         </mpasmsuite>
+      </item>
+      <item path="Trabajo4.asm" ex="true" overriding="false">
       </item>
       <mpasmsuite>
         <property key="absolute-mode" value="false"/>

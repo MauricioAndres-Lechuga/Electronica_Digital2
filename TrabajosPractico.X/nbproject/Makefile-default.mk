@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=Trabajo4.asm
+SOURCEFILES_QUOTED_IF_SPACED=Trabajo5INTEGRADOR.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Trabajo4.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/Trabajo4.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Trabajo5INTEGRADOR.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/Trabajo5INTEGRADOR.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/Trabajo4.o
+OBJECTFILES=${OBJECTDIR}/Trabajo5INTEGRADOR.o
 
 # Source Files
-SOURCEFILES=Trabajo4.asm
+SOURCEFILES=Trabajo5INTEGRADOR.asm
 
 
 CFLAGS=
@@ -94,22 +94,22 @@ MP_LINKER_DEBUG_OPTION=
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/Trabajo4.o: Trabajo4.asm  nbproject/Makefile-${CND_CONF}.mk
+${OBJECTDIR}/Trabajo5INTEGRADOR.o: Trabajo5INTEGRADOR.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/Trabajo4.o.d 
-	@${RM} ${OBJECTDIR}/Trabajo4.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Trabajo4.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_SIMULATOR=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Trabajo4.lst\" -e\"${OBJECTDIR}/Trabajo4.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Trabajo4.o\" \"Trabajo4.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/Trabajo4.o"
-	@${FIXDEPS} "${OBJECTDIR}/Trabajo4.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	@${RM} ${OBJECTDIR}/Trabajo5INTEGRADOR.o.d 
+	@${RM} ${OBJECTDIR}/Trabajo5INTEGRADOR.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Trabajo5INTEGRADOR.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_SIMULATOR=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Trabajo5INTEGRADOR.lst\" -e\"${OBJECTDIR}/Trabajo5INTEGRADOR.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Trabajo5INTEGRADOR.o\" \"Trabajo5INTEGRADOR.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/Trabajo5INTEGRADOR.o"
+	@${FIXDEPS} "${OBJECTDIR}/Trabajo5INTEGRADOR.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 else
-${OBJECTDIR}/Trabajo4.o: Trabajo4.asm  nbproject/Makefile-${CND_CONF}.mk
+${OBJECTDIR}/Trabajo5INTEGRADOR.o: Trabajo5INTEGRADOR.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/Trabajo4.o.d 
-	@${RM} ${OBJECTDIR}/Trabajo4.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Trabajo4.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Trabajo4.lst\" -e\"${OBJECTDIR}/Trabajo4.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Trabajo4.o\" \"Trabajo4.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/Trabajo4.o"
-	@${FIXDEPS} "${OBJECTDIR}/Trabajo4.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	@${RM} ${OBJECTDIR}/Trabajo5INTEGRADOR.o.d 
+	@${RM} ${OBJECTDIR}/Trabajo5INTEGRADOR.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Trabajo5INTEGRADOR.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Trabajo5INTEGRADOR.lst\" -e\"${OBJECTDIR}/Trabajo5INTEGRADOR.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Trabajo5INTEGRADOR.o\" \"Trabajo5INTEGRADOR.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/Trabajo5INTEGRADOR.o"
+	@${FIXDEPS} "${OBJECTDIR}/Trabajo5INTEGRADOR.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 endif
 
