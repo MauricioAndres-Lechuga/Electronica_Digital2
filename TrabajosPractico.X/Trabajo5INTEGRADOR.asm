@@ -99,7 +99,7 @@ INI_PUERTOS MACRO
    CLRF DECS
    CLRF CEN
    CLRF	ADC_DB
-   MOVLW    .90
+   MOVLW    .114
    MOVWF    MAX_dB
 ENDM
 
@@ -128,16 +128,19 @@ ENDM
 INI_ADC MACRO
     ; HABILITAR AN0 COMO ANALOGICO
     BANKSEL ANSEL
-    BSF     ANSEL,0            ; RA0 analógico
+    BSF     ANSEL,0 ; RA0 analógico
+    BSF	    ANSEL,3
 
     ; RA0 como entrada
     BANKSEL TRISA
     BSF     TRISA,0
+    BSF	    TRISA,3
 
     ; ADCON1 CONFIGURA REFERENCIAS
     BANKSEL ADCON1
-    MOVLW   b'00000010'        ; Vref = Vdd/Vss
-
+    MOVLW   b'00010000'        ; Vref = Vdd/Vss
+    MOVWF   ADCON1
+    
     ; ADCON0 CONFIGURA CANAL Y CLOCK
     BANKSEL ADCON0
     MOVLW   b'10000001'        ; ADCS=10 (Fosc/32), CHS=000 (AN0), ADON=1
@@ -512,7 +515,7 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED A4 
-    MOVLW .10
+    MOVLW .15
     SUBWF TEMP1,F
     BANKSEL ADC_DB
     MOVF ADC_DB,W
@@ -523,7 +526,7 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED C0
-    MOVLW .10
+    MOVLW .15
     SUBWF TEMP1,F
     BANKSEL ADC_DB
     MOVF ADC_DB,W
@@ -638,22 +641,22 @@ RETURN
 ;==============================================================
 TABLA_MAXdB
     ADDWF PCL, F
-    RETLW .50
-    RETLW .54
-    RETLW .58
-    RETLW .62	
-    RETLW .66
-    RETLW .70
+    RETLW .60
+    RETLW .64
+    RETLW .68
+    RETLW .70	
     RETLW .74
     RETLW .78
-    RETLW .82
-    RETLW .86
+    RETLW .80
+    RETLW .84
+    RETLW .88
     RETLW .90
     RETLW .94
     RETLW .98
-    RETLW .105
-    RETLW .110
-    RETLW .115
+    RETLW .100
+    RETLW .104
+    RETLW .108
+    RETLW .114
 
 ;==============================================================
 ; TABLA DE CONVERSIÓN PARA DISPLAY 7 SEGMENTOS
