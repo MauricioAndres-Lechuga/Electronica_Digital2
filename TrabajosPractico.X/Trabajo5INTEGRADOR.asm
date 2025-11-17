@@ -101,15 +101,15 @@ ENDM
 INI_UART MACRO
    BANKSEL TXSTA
    BSF     TXSTA, TXEN      ; Transmisión habilitada
-   BCF     TXSTA, SYNC      ; Modo asíncrono
+   BCF     TXSTA, SYNC      ; Modo asíncrono (comparten clock)
    BSF     TXSTA, BRGH      ; Alta velocidad
    BANKSEL BAUDCTL
-   BCF     BAUDCTL, BRG16   ; Baudrate de 8 bits
+   BCF     BAUDCTL, BRG16   ; Generador de Baudrate de 8 bits
    BANKSEL SPBRG
-   MOVLW   D'25'            ; 9600 baudios con 4MHz
-   MOVWF   SPBRG
+   MOVLW   D'25'            ; 9600 baudios con 4MHz ---> Fosc / (16 × (SPBRG + 1)) --> SPBRG = (4,000,000 / 153,600) - 1 ? 25
+   MOVWF   SPBRG    
    BANKSEL RCSTA
-   BSF     RCSTA, SPEN      ; Habilita puerto serial
+   BSF     RCSTA, SPEN      ; Habilita todo el puerto serial (UART)
 ENDM
 
 INI_INTER  MACRO
@@ -150,7 +150,7 @@ INI_PORTA
 INI_PORTC
 INI_PORTD
 INI_TECL
-INI_UART        ; ? AGREGADO
+INI_UART        
 INI_ADC
 INI_INTER
 
@@ -169,8 +169,8 @@ MAIN_LOOP
 ISR_INICIO    
     MOVWF   W_TEMP
     MOVF    STATUS,W
-    MOVWF   STATUS_TEMP
-    BTFSS   INTCON,RBIF
+    MOVWF   STATUS_TEMP		;Guardamos contexto
+    BTFSS   INTCON,RBIF		;si hubo interrupcion Salta a CLRF NTECL
     GOTO    ISR_FIN
     CLRF    NTECL              
     MOVLW   b'00001110'        ; Activa primera fila
@@ -252,16 +252,16 @@ TECL_LOAD
     MOVWF   TEMP1           ; Guarda temporalmente
     
     ; Configurar PCLATH
-    MOVLW   HIGH TABLA_MAXdB
-    MOVWF   PCLATH
-    
+    MOVLW   HIGH TABLA_MAXdB	;Cargo en W el byte mas alto de tabla max
+    MOVWF   PCLATH		;Lo guardo en PCLATH para usarlo cuando se haga la asignacion en el PCL de la tabla
+	
     MOVF    TEMP1,W
     CALL    TABLA_MAXdB
-    MOVWF   MAX_dB
+    MOVWF   MAX_dB		;Guardo el valor de la tecla presionada
     
     ; Restaurar PCLATH
-    CLRF    PCLATH
-    GOTO    TECL_RES
+    CLRF    PCLATH		;limpio el PCLATH para que no me afecte en otras partes del programa
+    GOTO    TECL_RES		
 ;--------------------------------------------------------------
 ; Limpieza final de interrupción
 ;--------------------------------------------------------------
@@ -274,11 +274,10 @@ TECL_RES
     
 WAIT_RELEASE
     MOVLW   b'11110000'
-    ANDWF   PORTB,W
+    ANDWF   PORTB,W		;Me quedo con RB4?RB7 solamente	(me quedo con las filas)
     SUBLW   b'11110000'         
-    BTFSS   STATUS,Z
-    GOTO    WAIT_RELEASE        
-    
+    BTFSS   STATUS,Z		;si Z=0	entonces hay una tecla presionada
+    GOTO    WAIT_RELEASE	;repito hasta que no haya ninguna tecla presionada  
     CLRF    NTECL        
     MOVLW   b'00000000'         ; Desactiva todas las filas
     MOVWF   PORTB
@@ -331,23 +330,23 @@ LOOP2_20ms
 ;==============================================================
 ADC_READ
     ; ESPERA DE ADQUISICION (TACQ >= 20us)
-    MOVLW   D'50'              ; 50 ciclos ~ 20us
+    MOVLW   D'50'              ; se carga el 50 para generar un retardo para estabilizar la muestra en el capacitor ~ 20us
     MOVWF   TEMP1
 ACQ_LOOP
-    DECFSZ  TEMP1,F
-    GOTO    ACQ_LOOP
-
-    ; COMENZAR CONVERSION
-    BANKSEL ADCON0
-    BSF     ADCON0,GO_DONE
+	DECFSZ  TEMP1,F		;Decremento hasta que sea 0, (espero 50microsegundos)
+	GOTO    ACQ_LOOP
+	
+	; COMENZAR CONVERSION
+	BANKSEL ADCON0
+	BSF     ADCON0,GO_DONE
 
 WAIT_ADC
-    BTFSC   ADCON0,GO_DONE
-    GOTO    WAIT_ADC
+	BTFSC   ADCON0,GO_DONE
+	GOTO    WAIT_ADC
 
-    BANKSEL ADRESH
-    MOVF    ADRESH,W           ; LECTURA (JUSTIF IZQ)
-    RETURN
+	BANKSEL ADRESH
+	MOVF    ADRESH,W           ; LECTURA (JUSTIF IZQ)
+	RETURN
 ;-------- TRANSMISION SERIE --------
 SEND_ADC
     LOOP_SENDADC
@@ -406,12 +405,12 @@ FIX_DEC
 MAXdB_COMP
     ; limpiar LEDs
     BANKSEL PORTA
-    BCF PORTA,4     ; LED max
-    BCF PORTA,2     ; LED min
+    BCF PORTA,4     
+    BCF PORTA,2     ; LED MAX
     BANKSEL PORTC
     BCF PORTC,0
     BCF PORTC,1
-    BCF PORTC,2
+    BCF PORTC,2	    ;LED MIN
     BCF PORTC,3
     BCF	STATUS,C
 
@@ -420,7 +419,18 @@ MAXdB_COMP
     MOVWF TEMP1
 
 ;-------------------------------
-; LED MAX (A4)
+; LED MAX (A2)
+    BANKSEL ADRESH
+    MOVF ADRESH,W
+    SUBWF TEMP1,W
+    BTFSS STATUS,C
+    BSF PORTA,2
+    BCF	STATUS,C
+
+;-------------------------------
+; LED A4 
+    MOVLW .20
+    SUBWF TEMP1,F
     BANKSEL ADRESH
     MOVF ADRESH,W
     SUBWF TEMP1,W
@@ -429,7 +439,7 @@ MAXdB_COMP
     BCF	STATUS,C
 
 ;-------------------------------
-; LED C0 (C0)
+; LED C0
     MOVLW .20
     SUBWF TEMP1,F
     BANKSEL ADRESH
@@ -440,7 +450,7 @@ MAXdB_COMP
     BCF	STATUS,C
 
 ;-------------------------------
-; LED C1 (C1)
+; LED C1
     MOVLW .20
     SUBWF TEMP1,F
     BANKSEL ADRESH
@@ -451,7 +461,7 @@ MAXdB_COMP
     BCF	STATUS,C
 
 ;-------------------------------
-; LED C2 (C2)
+; LED C2
     MOVLW .20
     SUBWF TEMP1,F
     BANKSEL ADRESH
@@ -462,7 +472,7 @@ MAXdB_COMP
     BCF	STATUS,C
 
 ;-------------------------------
-; LED C3 (C3)
+; LED MIN (C3)
     MOVLW .20
     SUBWF TEMP1,F
     BANKSEL ADRESH
@@ -470,17 +480,6 @@ MAXdB_COMP
     SUBWF TEMP1,W
     BTFSS STATUS,C
     BSF PORTC,3
-    BCF	STATUS,C
-
-;-------------------------------
-; LED MIN (A2)
-    MOVLW .20
-    SUBWF TEMP1,F
-    BANKSEL ADRESH
-    MOVF ADRESH,W
-    SUBWF TEMP1,W
-    BTFSS STATUS,C
-    BSF PORTA,2
     BCF	STATUS,C
     
     RETURN
@@ -491,15 +490,15 @@ MAXdB_COMP
 MUESTREO
     ; ===== DIGITO UNIDADES =====
     BANKSEL PORTE
-    BSF	    PORTE,0
+    BCF	    PORTE,0
     BCF	    PORTE,1
     BCF	    PORTE,2
     BANKSEL PORTA
-    BCF	    PORTA,5
-
+    BSF	    PORTA,5
+    
     MOVLW HIGH TABLA_TECL   ; <<< cargar página
     MOVWF PCLATH
-    MOVF    DECS,W
+    MOVF    UNI,W
     CALL    TABLA_TECL
     CLRF    PCLATH          ; <<< restaurar
     MOVWF   PORTD
@@ -508,7 +507,23 @@ MUESTREO
     ; ===== DIGITO DECENAS =====
     BANKSEL PORTE
     BCF	    PORTE,0
-    BSF	    PORTE,1
+    BCF	    PORTE,1
+    BSF	    PORTE,2
+    BANKSEL PORTA
+    BCF	    PORTA,5
+
+    MOVLW HIGH TABLA_TECL
+    MOVWF PCLATH
+    MOVF    DECS,W
+    CALL    TABLA_TECL
+    CLRF    PCLATH
+    MOVWF   PORTD
+    CALL    DELAY_2ms
+
+    ; ===== DIGITO CENTENAS =====
+    BANKSEL PORTE
+    BSF	    PORTE,0
+    BCF	    PORTE,1
     BCF	    PORTE,2
     BANKSEL PORTA
     BCF	    PORTA,5
@@ -520,28 +535,12 @@ MUESTREO
     CLRF    PCLATH
     MOVWF   PORTD
     CALL    DELAY_2ms
-
-    ; ===== DIGITO CENTENAS =====
-    BANKSEL PORTE
-    BCF	    PORTE,0
-    BCF	    PORTE,1
-    BCF	    PORTE,2
-    BANKSEL PORTA
-    BSF	    PORTA,5
-
-    MOVLW HIGH TABLA_TECL
-    MOVWF PCLATH
-    MOVF    UNI,W
-    CALL    TABLA_TECL
-    CLRF    PCLATH
-    MOVWF   PORTD
-    CALL    DELAY_2ms
     
     ; ===== GUARDA (LETRA ?dE?) =====
     BANKSEL PORTE
     BCF	    PORTE,0
-    BCF	    PORTE,1
-    BSF	    PORTE,2
+    BSF	    PORTE,1
+    BCF	    PORTE,2
     BANKSEL PORTA
     BCF	    PORTA,5
 
