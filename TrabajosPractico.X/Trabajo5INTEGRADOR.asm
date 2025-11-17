@@ -20,6 +20,10 @@ CBLOCK 0x20
     NTECL
     MAX_dB
     TEMP1
+    TEMP2
+    INDEX
+    RESTO
+    ADC_DB    
 ENDC  
 
 ;*** Vectores de Reset e Interrupción ***
@@ -94,7 +98,8 @@ INI_PUERTOS MACRO
    CLRF UNI
    CLRF DECS
    CLRF CEN
-   MOVLW    .200
+   CLRF	ADC_DB
+   MOVLW    .90
    MOVWF    MAX_dB
 ENDM
 
@@ -131,7 +136,7 @@ INI_ADC MACRO
 
     ; ADCON1 CONFIGURA REFERENCIAS
     BANKSEL ADCON1
-    MOVLW   b'00000000'        ; Vref = Vdd/Vss
+    MOVLW   b'00000010'        ; Vref = Vdd/Vss
 
     ; ADCON0 CONFIGURA CANAL Y CLOCK
     BANKSEL ADCON0
@@ -156,6 +161,7 @@ INI_INTER
 
 MAIN_LOOP
     CALL ADC_READ
+    CALL TRANS_ADC_DB
     CALL MAXdB_TRANS
     CALL MAXdB_COMP
     CALL MUESTREO
@@ -347,14 +353,91 @@ WAIT_ADC
 	BANKSEL ADRESH
 	MOVF    ADRESH,W           ; LECTURA (JUSTIF IZQ)
 	RETURN
-;-------- TRANSMISION SERIE --------
+	
+; ============================================================
+;  TRANS_ADC_DB
+;  Convierte ADRESH (0?255) -> ADC_DB (0?120 dB)
+;  Usa tabla + interpolación discreta.
+;
+;  REGISTROS USADOS:  TEMP1, TEMP2, INDEX, RESTO
+; ============================================================
+
+
+TRANS_ADC_DB
+    ; -------- copiar ADC --------
+    BANKSEL ADRESH
+    MOVF    ADRESH,W
+    MOVWF   TEMP1              ; TEMP1 = ADC (0?255)
+
+    ; -------- índice = ADC/16 --------
+    MOVF    TEMP1,W
+    ANDLW   0xF0               ; deja nibble alto
+    MOVWF   INDEX              ; INDEX = nibble alto
+    SWAPF   INDEX,F            ; lo pasa a nibble bajo
+
+    ; -------- resto = ADC % 16 --------
+    MOVF    TEMP1,W
+    ANDLW   0x0F
+    MOVWF   RESTO
+
+    ; -------- cargar tabla[index] --------
+    MOVLW   HIGH TABLA_MAXdB
+    MOVWF   PCLATH
+
+    MOVF    INDEX,W
+    CALL    TABLA_MAXdB
+    MOVWF   ADC_DB             ; valor base
+
+    ; -------- delta = tabla[index+1] - tabla[index] --------
+    INCF    INDEX,F            ; índice siguiente
+    MOVF    INDEX,W
+    CALL    TABLA_MAXdB
+    MOVWF   TEMP1              ; TEMP1 = tabla[i+1]
+
+    DECF    INDEX,F
+    MOVF    INDEX,W
+    CALL    TABLA_MAXdB
+    SUBWF   TEMP1,F            ; TEMP1 = delta
+
+    ; ahora:
+    ;   TEMP1 = delta
+    ;   RESTO = resto 0?15
+
+    ; -------- interpolación (delta * resto) --------
+    CLRF    TEMP2              ; acumulador = 0
+
+MUL_LOOP
+    MOVF    RESTO,F
+    BTFSC   STATUS,Z
+    GOTO    MUL_DONE
+
+    MOVF    TEMP1,W
+    ADDWF   TEMP2,F           ; TEMP2 += delta
+
+    DECF    RESTO,F
+    GOTO    MUL_LOOP
+
+MUL_DONE
+    ; dividir por 16 ? nibble alto ? nibble bajo
+    SWAPF   TEMP2,W           
+    ANDLW   0x0F
+
+    BANKSEL ADC_DB
+    ADDWF   ADC_DB,F           ; suma interpolación
+
+    CLRF    PCLATH
+    RETURN
+    
+;==============================================================
+; TRANSMISION SERIE
+;==============================================================
 SEND_ADC
     LOOP_SENDADC
     BANKSEL TXSTA
     BTFSS   TXSTA, TRMT      ; Esperar buffer vacío
     GOTO    LOOP_SENDADC
-    BANKSEL ADRESH
-    MOVF    ADRESH, W        ; ADC de 8 bits
+    BANKSEL ADC_DB
+    MOVF    ADC_DB, W        ; ADC de 8 bits
     BANKSEL TXREG
     MOVWF   TXREG            ; Enviar 1 byte crudo
 RETURN
@@ -420,8 +503,8 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED MAX (A2)
-    BANKSEL ADRESH
-    MOVF ADRESH,W
+    BANKSEL ADC_DB
+    MOVF ADC_DB,W
     SUBWF TEMP1,W
     BTFSS STATUS,C
     BSF PORTA,2
@@ -429,10 +512,10 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED A4 
-    MOVLW .20
+    MOVLW .10
     SUBWF TEMP1,F
-    BANKSEL ADRESH
-    MOVF ADRESH,W
+    BANKSEL ADC_DB
+    MOVF ADC_DB,W
     SUBWF TEMP1,W
     BTFSS STATUS,C
     BSF PORTA,4
@@ -440,10 +523,10 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED C0
-    MOVLW .20
+    MOVLW .10
     SUBWF TEMP1,F
-    BANKSEL ADRESH
-    MOVF ADRESH,W
+    BANKSEL ADC_DB
+    MOVF ADC_DB,W
     SUBWF TEMP1,W
     BTFSS STATUS,C
     BSF PORTC,0
@@ -451,10 +534,10 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED C1
-    MOVLW .20
+    MOVLW .10
     SUBWF TEMP1,F
-    BANKSEL ADRESH
-    MOVF ADRESH,W
+    BANKSEL ADC_DB
+    MOVF ADC_DB,W
     SUBWF TEMP1,W
     BTFSS STATUS,C
     BSF PORTC,1
@@ -462,10 +545,10 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED C2
-    MOVLW .20
+    MOVLW .10
     SUBWF TEMP1,F
-    BANKSEL ADRESH
-    MOVF ADRESH,W
+    BANKSEL ADC_DB
+    MOVF ADC_DB,W
     SUBWF TEMP1,W
     BTFSS STATUS,C
     BSF PORTC,2
@@ -473,10 +556,10 @@ MAXdB_COMP
 
 ;-------------------------------
 ; LED MIN (C3)
-    MOVLW .20
+    MOVLW .10
     SUBWF TEMP1,F
-    BANKSEL ADRESH
-    MOVF ADRESH,W
+    BANKSEL ADC_DB
+    MOVF ADC_DB,W
     SUBWF TEMP1,W
     BTFSS STATUS,C
     BSF PORTC,3
@@ -554,23 +637,23 @@ RETURN
 ; TABLA DE CONVERSIÓN PARA MAX_dB
 ;==============================================================
 TABLA_MAXdB
-    ADDWF PCL,F
-    RETLW .120  ; 0
-    RETLW .128  ; 1
-    RETLW .136  ; 2
-    RETLW .144  ; 3
-    RETLW .152  ; 4
-    RETLW .160  ; 5
-    RETLW .168  ; 6
-    RETLW .176  ; 7
-    RETLW .192  ; 8
-    RETLW .200  ; 9
-    RETLW .208  ; A
-    RETLW .216  ; B
-    RETLW .224  ; C
-    RETLW .232  ; D
-    RETLW .240  ; E
-    RETLW .250  ; F
+    ADDWF PCL, F
+    RETLW .50
+    RETLW .54
+    RETLW .58
+    RETLW .62	
+    RETLW .66
+    RETLW .70
+    RETLW .74
+    RETLW .78
+    RETLW .82
+    RETLW .86
+    RETLW .90
+    RETLW .94
+    RETLW .98
+    RETLW .105
+    RETLW .110
+    RETLW .115
 
 ;==============================================================
 ; TABLA DE CONVERSIÓN PARA DISPLAY 7 SEGMENTOS

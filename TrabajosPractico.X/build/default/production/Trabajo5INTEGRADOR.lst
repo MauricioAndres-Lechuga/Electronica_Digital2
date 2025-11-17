@@ -1,4 +1,4 @@
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  1
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -39,165 +39,170 @@ Warning[205]: Found directive in column 1. (CBLOCK)
   0000002A            00020     NTECL
   0000002B            00021     MAX_dB
   0000002C            00022     TEMP1
+  0000002D            00023     TEMP2
+  0000002E            00024     INDEX
+  0000002F            00025     RESTO
+  00000030            00026     ADC_DB    
 Warning[205]: Found directive in column 1. (ENDC)
-                      00023 ENDC  
-                      00024 
-                      00025 ;*** Vectores de Reset e Interrupción ***
+                      00027 ENDC  
+                      00028 
+                      00029 ;*** Vectores de Reset e Interrupción ***
 Warning[205]: Found directive in column 1. (ORG)
-                      00026 ORG 0x00
+                      00030 ORG 0x00
 Warning[203]: Found opcode in column 1. (GOTO)
-0000   2???           00027 GOTO INICIO
+0000   2???           00031 GOTO INICIO
 Warning[205]: Found directive in column 1. (ORG)
-                      00028 ORG 0x04
+                      00032 ORG 0x04
 Warning[203]: Found opcode in column 1. (GOTO)
-0004   2???           00029 GOTO ISR_INICIO   
-                      00030 
-                      00031     
-                      00032 ;==============================================================
-                      00033 ; DEFINICION DE MACROS
-                      00034 ;==============================================================
-                      00035 INI_PORTB MACRO
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  2
+0004   2???           00033 GOTO ISR_INICIO   
+                      00034 
+                      00035     
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00036   BANKSEL ANSELH
-                      00037   CLRF    ANSELH                 ; PORTB digital
-                      00038   BANKSEL TRISB
-                      00039   MOVLW b'11110000'         ; RB7-RB4 = entradas (columnas), RB3-RB0 = salidas (filas)
-                      00040   MOVWF TRISB
+                      00036 ;==============================================================
+                      00037 ; DEFINICION DE MACROS
+                      00038 ;==============================================================
+                      00039 INI_PORTB MACRO
+                      00040   BANKSEL ANSELH
+                      00041   CLRF    ANSELH                 ; PORTB digital
+                      00042   BANKSEL TRISB
+                      00043   MOVLW b'11110000'         ; RB7-RB4 = entradas (columnas), RB3-RB0 = salidas (filas)
+                      00044   MOVWF TRISB
 Warning[205]: Found directive in column 1. (ENDM)
-                      00041 ENDM
-                      00042   
-                      00043 INI_PORTE MACRO
-                      00044    BANKSEL ANSEL
-                      00045    BCF      ANSEL,5
-                      00046    BCF      ANSEL,6
-                      00047    BCF      ANSEL,7 ;PORTE digital
-                      00048    BANKSEL  TRISE
-                      00049    BCF      TRISE,0
-                      00050    BCF      TRISE,1
-                      00051    BCF      TRISE,2 ;PORTE salidas
+                      00045 ENDM
+                      00046   
+                      00047 INI_PORTE MACRO
+                      00048    BANKSEL ANSEL
+                      00049    BCF      ANSEL,5
+                      00050    BCF      ANSEL,6
+                      00051    BCF      ANSEL,7 ;PORTE digital
+                      00052    BANKSEL  TRISE
+                      00053    BCF      TRISE,0
+                      00054    BCF      TRISE,1
+                      00055    BCF      TRISE,2 ;PORTE salidas
 Warning[205]: Found directive in column 1. (ENDM)
-                      00052 ENDM
-                      00053    
-                      00054 INI_PORTD MACRO
-                      00055    BANKSEL  TRISD
-                      00056    CLRF     TRISD ;PORTD salida, no tiene ANSEL, solo digital
+                      00056 ENDM
+                      00057    
+                      00058 INI_PORTD MACRO
+                      00059    BANKSEL  TRISD
+                      00060    CLRF     TRISD ;PORTD salida, no tiene ANSEL, solo digital
 Warning[205]: Found directive in column 1. (ENDM)
-                      00057 ENDM
-                      00058    
-                      00059 INI_PORTC MACRO
-                      00060     BANKSEL TRISC
-                      00061     BCF     TRISC,0
-                      00062     BCF     TRISC,1
-                      00063     BCF     TRISC,2
-                      00064     BCF     TRISC,3
-                      00065     BCF     TRISC,6     ; RC6 como salida para TX
+                      00061 ENDM
+                      00062    
+                      00063 INI_PORTC MACRO
+                      00064     BANKSEL TRISC
+                      00065     BCF     TRISC,0
+                      00066     BCF     TRISC,1
+                      00067     BCF     TRISC,2
+                      00068     BCF     TRISC,3
+                      00069     BCF     TRISC,6     ; RC6 como salida para TX
 Warning[205]: Found directive in column 1. (ENDM)
-                      00066 ENDM
-                      00067     
-                      00068 INI_PORTA MACRO
-                      00069     BANKSEL ANSEL
-                      00070     BCF     ANSEL,2
-                      00071     BCF     ANSEL,4
-                      00072     BANKSEL TRISA
-                      00073     BCF     TRISA,2
-                      00074     BCF     TRISA,4
-                      00075     BCF     TRISA,5
+                      00070 ENDM
+                      00071     
+                      00072 INI_PORTA MACRO
+                      00073     BANKSEL ANSEL
+                      00074     BCF     ANSEL,2
+                      00075     BCF     ANSEL,4
+                      00076     BANKSEL TRISA
+                      00077     BCF     TRISA,2
+                      00078     BCF     TRISA,4
+                      00079     BCF     TRISA,5
 Warning[205]: Found directive in column 1. (ENDM)
-                      00076 ENDM
-                      00077     
-                      00078 INI_TECL MACRO
-                      00079    BANKSEL OPTION_REG
-                      00080    BCF OPTION_REG,7           ; Habilita pull-ups en PORTB (RBPU=0)
-                      00081    BANKSEL IOCB
-                      00082    MOVLW b'11110000'          ; Habilita cambio en RB7?RB4
-                      00083    MOVWF IOCB
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  3
+                      00080 ENDM
+                      00081     
+                      00082 INI_TECL MACRO
+                      00083    BANKSEL OPTION_REG
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                      00084    BCF OPTION_REG,7           ; Habilita pull-ups en PORTB (RBPU=0)
+                      00085    BANKSEL IOCB
+                      00086    MOVLW b'11110000'          ; Habilita cambio en RB7?RB4
+                      00087    MOVWF IOCB
 Warning[205]: Found directive in column 1. (ENDM)
-                      00084 ENDM
-                      00085    
-                      00086 INI_PUERTOS MACRO
-                      00087    BANKSEL PORTB
-                      00088    CLRF PORTA
-                      00089    CLRF PORTC
-                      00090    CLRF PORTE
-                      00091    CLRF PORTB
-                      00092    CLRF PORTD
-                      00093    CLRF NTECL
-                      00094    CLRF UNI
-                      00095    CLRF DECS
-                      00096    CLRF CEN
-                      00097    MOVLW    .200
-                      00098    MOVWF    MAX_dB
+                      00088 ENDM
+                      00089    
+                      00090 INI_PUERTOS MACRO
+                      00091    BANKSEL PORTB
+                      00092    CLRF PORTA
+                      00093    CLRF PORTC
+                      00094    CLRF PORTE
+                      00095    CLRF PORTB
+                      00096    CLRF PORTD
+                      00097    CLRF NTECL
+                      00098    CLRF UNI
+                      00099    CLRF DECS
+                      00100    CLRF CEN
+                      00101    CLRF ADC_DB
+                      00102    MOVLW    .90
+                      00103    MOVWF    MAX_dB
 Warning[205]: Found directive in column 1. (ENDM)
-                      00099 ENDM
-                      00100 
-                      00101 INI_UART MACRO
-                      00102    BANKSEL TXSTA
-                      00103    BSF     TXSTA, TXEN      ; Transmisión habilitada
-                      00104    BCF     TXSTA, SYNC      ; Modo asíncrono (comparten clock)
-                      00105    BSF     TXSTA, BRGH      ; Alta velocidad
-                      00106    BANKSEL BAUDCTL
-                      00107    BCF     BAUDCTL, BRG16   ; Generador de Baudrate de 8 bits
-                      00108    BANKSEL SPBRG
-                      00109    MOVLW   D'25'            ; 9600 baudios con 4MHz ---> Fosc / (16 × (SPBRG + 1)) --> SPBRG = (4,000,00
+                      00104 ENDM
+                      00105 
+                      00106 INI_UART MACRO
+                      00107    BANKSEL TXSTA
+                      00108    BSF     TXSTA, TXEN      ; Transmisión habilitada
+                      00109    BCF     TXSTA, SYNC      ; Modo asíncrono (comparten clock)
+                      00110    BSF     TXSTA, BRGH      ; Alta velocidad
+                      00111    BANKSEL BAUDCTL
+                      00112    BCF     BAUDCTL, BRG16   ; Generador de Baudrate de 8 bits
+                      00113    BANKSEL SPBRG
+                      00114    MOVLW   D'25'            ; 9600 baudios con 4MHz ---> Fosc / (16 × (SPBRG + 1)) --> SPBRG = (4,000,00
                             0 / 153,600) - 1 ? 25
-                      00110    MOVWF   SPBRG    
-                      00111    BANKSEL RCSTA
-                      00112    BSF     RCSTA, SPEN      ; Habilita todo el puerto serial (UART)
+                      00115    MOVWF   SPBRG    
+                      00116    BANKSEL RCSTA
+                      00117    BSF     RCSTA, SPEN      ; Habilita todo el puerto serial (UART)
 Warning[205]: Found directive in column 1. (ENDM)
-                      00113 ENDM
-                      00114 
-                      00115 INI_INTER  MACRO
-                      00116    BANKSEL INTCON
-                      00117    BCF INTCON, RBIF      ; Limpia bandera anterior
-                      00118    MOVF PORTB, W         ; Lectura obligatoria para armar el latch
-                      00119    BSF INTCON, RBIE       ; Habilita interrupción en cambio de RB
-                      00120    BSF INTCON, GIE        ; Habilita interrupciones globales
+                      00118 ENDM
+                      00119 
+                      00120 INI_INTER  MACRO
+                      00121    BANKSEL INTCON
+                      00122    BCF INTCON, RBIF      ; Limpia bandera anterior
+                      00123    MOVF PORTB, W         ; Lectura obligatoria para armar el latch
+                      00124    BSF INTCON, RBIE       ; Habilita interrupción en cambio de RB
+                      00125    BSF INTCON, GIE        ; Habilita interrupciones globales
 Warning[205]: Found directive in column 1. (ENDM)
-                      00121 ENDM
-                      00122 
-                      00123 INI_ADC MACRO
-                      00124     ; HABILITAR AN0 COMO ANALOGICO
-                      00125     BANKSEL ANSEL
-                      00126     BSF     ANSEL,0            ; RA0 analógico
+                      00126 ENDM
                       00127 
-                      00128     ; RA0 como entrada
-                      00129     BANKSEL TRISA
-                      00130     BSF     TRISA,0
-                      00131 
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  4
+                      00128 INI_ADC MACRO
+                      00129     ; HABILITAR AN0 COMO ANALOGICO
+                      00130     BANKSEL ANSEL
+                      00131     BSF     ANSEL,0            ; RA0 analógico
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00132     ; ADCON1 CONFIGURA REFERENCIAS
-                      00133     BANKSEL ADCON1
-                      00134     MOVLW   b'00000000'        ; Vref = Vdd/Vss
-                      00135 
-                      00136     ; ADCON0 CONFIGURA CANAL Y CLOCK
-                      00137     BANKSEL ADCON0
-                      00138     MOVLW   b'10000001'        ; ADCS=10 (Fosc/32), CHS=000 (AN0), ADON=1
-                      00139     MOVWF   ADCON0
+                      00132 
+                      00133     ; RA0 como entrada
+                      00134     BANKSEL TRISA
+                      00135     BSF     TRISA,0
+                      00136 
+                      00137     ; ADCON1 CONFIGURA REFERENCIAS
+                      00138     BANKSEL ADCON1
+                      00139     MOVLW   b'00000010'        ; Vref = Vdd/Vss
+                      00140 
+                      00141     ; ADCON0 CONFIGURA CANAL Y CLOCK
+                      00142     BANKSEL ADCON0
+                      00143     MOVLW   b'10000001'        ; ADCS=10 (Fosc/32), CHS=000 (AN0), ADON=1
+                      00144     MOVWF   ADCON0
 Warning[205]: Found directive in column 1. (ENDM)
-                      00140 ENDM
-                      00141 
-                      00142 ;==============================================================
-                      00143 ; PROGRAMA PRINCIPAL
-                      00144 ;==============================================================
-0005                  00145 INICIO   
+                      00145 ENDM
+                      00146 
+                      00147 ;==============================================================
+                      00148 ; PROGRAMA PRINCIPAL
+                      00149 ;==============================================================
+0005                  00150 INICIO   
 Warning[206]: Found call to macro in column 1. (INI_PUERTOS)
-                      00146 INI_PUERTOS
+                      00151 INI_PUERTOS
 0005   1283 1303          M    BANKSEL PORTB
 0007   0185               M    CLRF PORTA
 0008   0187               M    CLRF PORTC
@@ -208,623 +213,714 @@ Warning[206]: Found call to macro in column 1. (INI_PUERTOS)
 000D   01A6               M    CLRF UNI
 000E   01A7               M    CLRF DECS
 000F   01A8               M    CLRF CEN
-0010   30C8               M    MOVLW    .200
-0011   00AB               M    MOVWF    MAX_dB
+0010   01B0               M    CLRF ADC_DB
+0011   305A               M    MOVLW    .90
+0012   00AB               M    MOVWF    MAX_dB
 Warning[206]: Found call to macro in column 1. (INI_PORTB)
-                      00147 INI_PORTB
-0012   1683 1703          M   BANKSEL ANSELH
+                      00152 INI_PORTB
+0013   1683 1703          M   BANKSEL ANSELH
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0014   0189               M   CLRF    ANSELH                 ; PORTB digital
-0015   1683 1303          M   BANKSEL TRISB
-0017   30F0               M   MOVLW b'11110000'         ; RB7-RB4 = entradas (columnas), RB3-RB0 = salidas (filas)
+0015   0189               M   CLRF    ANSELH                 ; PORTB digital
+0016   1683 1303          M   BANKSEL TRISB
+0018   30F0               M   MOVLW b'11110000'         ; RB7-RB4 = entradas (columnas), RB3-RB0 = salidas (filas)
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0018   0086               M   MOVWF TRISB
+0019   0086               M   MOVWF TRISB
 Warning[206]: Found call to macro in column 1. (INI_PORTE)
-                      00148 INI_PORTE
-0019   1683 1703          M    BANKSEL ANSEL
+                      00153 INI_PORTE
+001A   1683 1703          M    BANKSEL ANSEL
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-001B   1288               M    BCF      ANSEL,5
+001C   1288               M    BCF      ANSEL,5
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-001C   1308               M    BCF      ANSEL,6
+001D   1308               M    BCF      ANSEL,6
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-001D   1388               M    BCF      ANSEL,7 ;PORTE digital
-001E   1683 1303          M    BANKSEL  TRISE
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0020   1009               M    BCF      TRISE,0
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0021   1089               M    BCF      TRISE,1
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  5
+001E   1388               M    BCF      ANSEL,7 ;PORTE digital
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0022   1109               M    BCF      TRISE,2 ;PORTE salidas
+001F   1683 1303          M    BANKSEL  TRISE
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0021   1009               M    BCF      TRISE,0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0022   1089               M    BCF      TRISE,1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0023   1109               M    BCF      TRISE,2 ;PORTE salidas
 Warning[206]: Found call to macro in column 1. (INI_PORTA)
-                      00149 INI_PORTA
-0023   1683 1703          M     BANKSEL ANSEL
+                      00154 INI_PORTA
+0024   1683 1703          M     BANKSEL ANSEL
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0025   1108               M     BCF     ANSEL,2
+0026   1108               M     BCF     ANSEL,2
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0026   1208               M     BCF     ANSEL,4
-0027   1683 1303          M     BANKSEL TRISA
+0027   1208               M     BCF     ANSEL,4
+0028   1683 1303          M     BANKSEL TRISA
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0029   1105               M     BCF     TRISA,2
+002A   1105               M     BCF     TRISA,2
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-002A   1205               M     BCF     TRISA,4
+002B   1205               M     BCF     TRISA,4
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-002B   1285               M     BCF     TRISA,5
+002C   1285               M     BCF     TRISA,5
 Warning[206]: Found call to macro in column 1. (INI_PORTC)
-                      00150 INI_PORTC
-002C   1683 1303          M     BANKSEL TRISC
+                      00155 INI_PORTC
+002D   1683 1303          M     BANKSEL TRISC
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-002E   1007               M     BCF     TRISC,0
+002F   1007               M     BCF     TRISC,0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-002F   1087               M     BCF     TRISC,1
+0030   1087               M     BCF     TRISC,1
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0030   1107               M     BCF     TRISC,2
+0031   1107               M     BCF     TRISC,2
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0031   1187               M     BCF     TRISC,3
+0032   1187               M     BCF     TRISC,3
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0032   1307               M     BCF     TRISC,6     ; RC6 como salida para TX
+0033   1307               M     BCF     TRISC,6     ; RC6 como salida para TX
 Warning[206]: Found call to macro in column 1. (INI_PORTD)
-                      00151 INI_PORTD
-0033   1683 1303          M    BANKSEL  TRISD
+                      00156 INI_PORTD
+0034   1683 1303          M    BANKSEL  TRISD
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0035   0188               M    CLRF     TRISD ;PORTD salida, no tiene ANSEL, solo digital
+0036   0188               M    CLRF     TRISD ;PORTD salida, no tiene ANSEL, solo digital
 Warning[206]: Found call to macro in column 1. (INI_TECL)
-                      00152 INI_TECL
-0036   1683 1303          M    BANKSEL OPTION_REG
+                      00157 INI_TECL
+0037   1683 1303          M    BANKSEL OPTION_REG
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0038   1381               M    BCF OPTION_REG,7           ; Habilita pull-ups en PORTB (RBPU=0)
-0039   1683 1303          M    BANKSEL IOCB
-003B   30F0               M    MOVLW b'11110000'          ; Habilita cambio en RB7?RB4
+0039   1381               M    BCF OPTION_REG,7           ; Habilita pull-ups en PORTB (RBPU=0)
+003A   1683 1303          M    BANKSEL IOCB
+003C   30F0               M    MOVLW b'11110000'          ; Habilita cambio en RB7?RB4
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-003C   0096               M    MOVWF IOCB
+003D   0096               M    MOVWF IOCB
 Warning[206]: Found call to macro in column 1. (INI_UART)
-                      00153 INI_UART        
-003D   1683 1303          M    BANKSEL TXSTA
+                      00158 INI_UART        
+003E   1683 1303          M    BANKSEL TXSTA
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-003F   1698               M    BSF     TXSTA, TXEN      ; Transmisión habilitada
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0040   1218               M    BCF     TXSTA, SYNC      ; Modo asíncrono (comparten clock)
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0041   1518               M    BSF     TXSTA, BRGH      ; Alta velocidad
-0042   1683 1703          M    BANKSEL BAUDCTL
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  6
+0040   1698               M    BSF     TXSTA, TXEN      ; Transmisión habilitada
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0044   1187               M    BCF     BAUDCTL, BRG16   ; Generador de Baudrate de 8 bits
-0045   1683 1303          M    BANKSEL SPBRG
-0047   3019               M    MOVLW   D'25'            ; 9600 baudios con 4MHz ---> Fosc / (16 × (SPBRG + 1)) --> SPBRG = (4,000,00
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0041   1218               M    BCF     TXSTA, SYNC      ; Modo asíncrono (comparten clock)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0042   1518               M    BSF     TXSTA, BRGH      ; Alta velocidad
+0043   1683 1703          M    BANKSEL BAUDCTL
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0045   1187               M    BCF     BAUDCTL, BRG16   ; Generador de Baudrate de 8 bits
+0046   1683 1303          M    BANKSEL SPBRG
+0048   3019               M    MOVLW   D'25'            ; 9600 baudios con 4MHz ---> Fosc / (16 × (SPBRG + 1)) --> SPBRG = (4,000,00
                             0 / 153,600) - 1 ? 25
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0048   0099               M    MOVWF   SPBRG    
-0049   1283 1303          M    BANKSEL RCSTA
-004B   1798               M    BSF     RCSTA, SPEN      ; Habilita todo el puerto serial (UART)
+0049   0099               M    MOVWF   SPBRG    
+004A   1283 1303          M    BANKSEL RCSTA
+004C   1798               M    BSF     RCSTA, SPEN      ; Habilita todo el puerto serial (UART)
 Warning[206]: Found call to macro in column 1. (INI_ADC)
-                      00154 INI_ADC
+                      00159 INI_ADC
                           M     ; HABILITAR AN0 COMO ANALOGICO
-004C   1683 1703          M     BANKSEL ANSEL
+004D   1683 1703          M     BANKSEL ANSEL
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-004E   1408               M     BSF     ANSEL,0            ; RA0 analógico
+004F   1408               M     BSF     ANSEL,0            ; RA0 analógico
                           M 
                           M     ; RA0 como entrada
-004F   1683 1303          M     BANKSEL TRISA
+0050   1683 1303          M     BANKSEL TRISA
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0051   1405               M     BSF     TRISA,0
+0052   1405               M     BSF     TRISA,0
                           M 
                           M     ; ADCON1 CONFIGURA REFERENCIAS
-0052   1683 1303          M     BANKSEL ADCON1
-0054   3000               M     MOVLW   b'00000000'        ; Vref = Vdd/Vss
+0053   1683 1303          M     BANKSEL ADCON1
+0055   3002               M     MOVLW   b'00000010'        ; Vref = Vdd/Vss
                           M 
                           M     ; ADCON0 CONFIGURA CANAL Y CLOCK
-0055   1283 1303          M     BANKSEL ADCON0
-0057   3081               M     MOVLW   b'10000001'        ; ADCS=10 (Fosc/32), CHS=000 (AN0), ADON=1
-0058   009F               M     MOVWF   ADCON0
+0056   1283 1303          M     BANKSEL ADCON0
+0058   3081               M     MOVLW   b'10000001'        ; ADCS=10 (Fosc/32), CHS=000 (AN0), ADON=1
+0059   009F               M     MOVWF   ADCON0
 Warning[206]: Found call to macro in column 1. (INI_INTER)
-                      00155 INI_INTER
-0059   1283 1303          M    BANKSEL INTCON
-005B   100B               M    BCF INTCON, RBIF      ; Limpia bandera anterior
-005C   0806               M    MOVF PORTB, W         ; Lectura obligatoria para armar el latch
-005D   158B               M    BSF INTCON, RBIE       ; Habilita interrupción en cambio de RB
-005E   178B               M    BSF INTCON, GIE        ; Habilita interrupciones globales
-                      00156 
-005F                  00157 MAIN_LOOP
-005F   2???           00158     CALL ADC_READ
-0060   2???           00159     CALL MAXdB_TRANS
-0061   2???           00160     CALL MAXdB_COMP
-0062   2???           00161     CALL MUESTREO
-0063   2???           00162     CALL SEND_ADC
-0064   0000           00163     NOP
-0065   2???           00164     GOTO MAIN_LOOP
-                      00165 
-                      00166 ;==============================================================
-                      00167 ; RUTINA DE INTERRUPCIÓN
-                      00168 ;==============================================================
-0066                  00169 ISR_INICIO    
-0066   00A0           00170     MOVWF   W_TEMP
-0067   0803           00171     MOVF    STATUS,W
-0068   00A1           00172     MOVWF   STATUS_TEMP         ;Guardamos contexto
-0069   1C0B           00173     BTFSS   INTCON,RBIF         ;si hubo interrupcion Salta a CLRF NTECL
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  7
+                      00160 INI_INTER
+005A   1283 1303          M    BANKSEL INTCON
+005C   100B               M    BCF INTCON, RBIF      ; Limpia bandera anterior
+005D   0806               M    MOVF PORTB, W         ; Lectura obligatoria para armar el latch
+005E   158B               M    BSF INTCON, RBIE       ; Habilita interrupción en cambio de RB
+005F   178B               M    BSF INTCON, GIE        ; Habilita interrupciones globales
+                      00161 
+0060                  00162 MAIN_LOOP
+0060   2???           00163     CALL ADC_READ
+0061   2???           00164     CALL TRANS_ADC_DB
+0062   2???           00165     CALL MAXdB_TRANS
+0063   2???           00166     CALL MAXdB_COMP
+0064   2???           00167     CALL MUESTREO
+0065   2???           00168     CALL SEND_ADC
+0066   0000           00169     NOP
+0067   2???           00170     GOTO MAIN_LOOP
+                      00171 
+                      00172 ;==============================================================
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-006A   2???           00174     GOTO    ISR_FIN
-006B   01AA           00175     CLRF    NTECL              
-006C   300E           00176     MOVLW   b'00001110'        ; Activa primera fila
-006D   0086           00177     MOVWF   PORTB
-006E   2???           00178     CALL    DELAY_20ms          ; *** DELAY PARA ESTABILIZAR ***
-006F   2???           00179     GOTO    TEST_COL
-                      00180 
-                      00181 ;--------------------------------------------------------------
-                      00182 ; Detecta columna activa
-                      00183 ;--------------------------------------------------------------
-0070                  00184 TEST_COL
-0070   1E06           00185     BTFSS   PORTB,4            
-0071   2???           00186     GOTO    TECL_DELAYC1
-0072   0AAA           00187     INCF    NTECL,F            
-                      00188     
-0073   1E86           00189     BTFSS   PORTB,5            
-0074   2???           00190     GOTO    TECL_DELAYC2
-0075   0AAA           00191     INCF    NTECL,F            
-                      00192     
-0076   1F06           00193     BTFSS   PORTB,6            
-0077   2???           00194     GOTO    TECL_DELAYC3
-0078   0AAA           00195     INCF    NTECL,F            
-                      00196     
-0079   1F86           00197     BTFSS   PORTB,7            
-007A   2???           00198     GOTO    TECL_DELAYC4
-                      00199     
-007B   0AAA           00200     INCF    NTECL,F            
-007C   2???           00201     GOTO    TEST_FIL
-                      00202 
-                      00203 ;--------------------------------------------------------------
-                      00204 ; Cambia fila activa para seguir buscando tecla
-                      00205 ;--------------------------------------------------------------
-007D                  00206 TEST_FIL
-007D   1D86           00207     BTFSS   PORTB,RB3            
-007E   2???           00208     GOTO    TECL_RES           
-                      00209     
-007F   1403           00210     BSF     STATUS,C
-0080   0D86           00211     RLF     PORTB,F            
-0081   2???           00212     CALL    DELAY_20ms          ; *** DELAY DESPUÉS DE CAMBIAR FILA ***
-0082   2???           00213     GOTO    TEST_COL
-                      00214 
-                      00215 ;--------------------------------------------------------------
-                      00216 ; Detecta qué columna se activó y verifica tecla
-                      00217 ;--------------------------------------------------------------
-0083                  00218 TECL_DELAYC1
-0083   2???           00219     CALL    DELAY_20ms
-0084   2???           00220     CALL    DELAY_20ms
-0085   1E06           00221     BTFSS   PORTB,4             
-0086   2???           00222     GOTO    TECL_LOAD
-0087   2???           00223     GOTO    TECL_RES
-                      00224 
-0088                  00225 TECL_DELAYC2
-0088   2???           00226     CALL    DELAY_20ms
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  8
+                      00173 ; RUTINA DE INTERRUPCIÓN
+                      00174 ;==============================================================
+0068                  00175 ISR_INICIO    
+0068   00A0           00176     MOVWF   W_TEMP
+0069   0803           00177     MOVF    STATUS,W
+006A   00A1           00178     MOVWF   STATUS_TEMP         ;Guardamos contexto
+006B   1C0B           00179     BTFSS   INTCON,RBIF         ;si hubo interrupcion Salta a CLRF NTECL
+006C   2???           00180     GOTO    ISR_FIN
+006D   01AA           00181     CLRF    NTECL              
+006E   300E           00182     MOVLW   b'00001110'        ; Activa primera fila
+006F   0086           00183     MOVWF   PORTB
+0070   2???           00184     CALL    DELAY_20ms          ; *** DELAY PARA ESTABILIZAR ***
+0071   2???           00185     GOTO    TEST_COL
+                      00186 
+                      00187 ;--------------------------------------------------------------
+                      00188 ; Detecta columna activa
+                      00189 ;--------------------------------------------------------------
+0072                  00190 TEST_COL
+0072   1E06           00191     BTFSS   PORTB,4            
+0073   2???           00192     GOTO    TECL_DELAYC1
+0074   0AAA           00193     INCF    NTECL,F            
+                      00194     
+0075   1E86           00195     BTFSS   PORTB,5            
+0076   2???           00196     GOTO    TECL_DELAYC2
+0077   0AAA           00197     INCF    NTECL,F            
+                      00198     
+0078   1F06           00199     BTFSS   PORTB,6            
+0079   2???           00200     GOTO    TECL_DELAYC3
+007A   0AAA           00201     INCF    NTECL,F            
+                      00202     
+007B   1F86           00203     BTFSS   PORTB,7            
+007C   2???           00204     GOTO    TECL_DELAYC4
+                      00205     
+007D   0AAA           00206     INCF    NTECL,F            
+007E   2???           00207     GOTO    TEST_FIL
+                      00208 
+                      00209 ;--------------------------------------------------------------
+                      00210 ; Cambia fila activa para seguir buscando tecla
+                      00211 ;--------------------------------------------------------------
+007F                  00212 TEST_FIL
+007F   1D86           00213     BTFSS   PORTB,RB3            
+0080   2???           00214     GOTO    TECL_RES           
+                      00215     
+0081   1403           00216     BSF     STATUS,C
+0082   0D86           00217     RLF     PORTB,F            
+0083   2???           00218     CALL    DELAY_20ms          ; *** DELAY DESPUÉS DE CAMBIAR FILA ***
+0084   2???           00219     GOTO    TEST_COL
+                      00220 
+                      00221 ;--------------------------------------------------------------
+                      00222 ; Detecta qué columna se activó y verifica tecla
+                      00223 ;--------------------------------------------------------------
+0085                  00224 TECL_DELAYC1
+0085   2???           00225     CALL    DELAY_20ms
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0089   2???           00227     CALL    DELAY_20ms
-008A   1E86           00228     BTFSS   PORTB,5
-008B   2???           00229     GOTO    TECL_LOAD
-008C   2???           00230     GOTO    TECL_RES
-                      00231 
-008D                  00232 TECL_DELAYC3
-008D   2???           00233     CALL    DELAY_20ms
-008E   2???           00234     CALL    DELAY_20ms
-008F   1F06           00235     BTFSS   PORTB,6
-0090   2???           00236     GOTO    TECL_LOAD
-0091   2???           00237     GOTO    TECL_RES
-                      00238 
-0092                  00239 TECL_DELAYC4
-0092   2???           00240     CALL    DELAY_20ms
-0093   2???           00241     CALL    DELAY_20ms
-0094   1F86           00242     BTFSS   PORTB,7
-0095   2???           00243     GOTO    TECL_LOAD
-0096   2???           00244     GOTO    TECL_RES
-                      00245 
-                      00246 ;--------------------------------------------------------------
-                      00247 ; Guarda valor según la tecla detectada (1 a 16)
-                      00248 ;--------------------------------------------------------------
-0097                  00249 TECL_LOAD
-0097   082A           00250     MOVF    NTECL,W
-0098   390F           00251     ANDLW   0x0F            ; Limita a 0-15
-0099   00AC           00252     MOVWF   TEMP1           ; Guarda temporalmente
-                      00253     
-                      00254     ; Configurar PCLATH
-009A   30??           00255     MOVLW   HIGH TABLA_MAXdB    ;Cargo en W el byte mas alto de tabla max
-009B   008A           00256     MOVWF   PCLATH              ;Lo guardo en PCLATH para usarlo cuando se haga la asignacion en el PCL 
+0086   2???           00226     CALL    DELAY_20ms
+0087   1E06           00227     BTFSS   PORTB,4             
+0088   2???           00228     GOTO    TECL_LOAD
+0089   2???           00229     GOTO    TECL_RES
+                      00230 
+008A                  00231 TECL_DELAYC2
+008A   2???           00232     CALL    DELAY_20ms
+008B   2???           00233     CALL    DELAY_20ms
+008C   1E86           00234     BTFSS   PORTB,5
+008D   2???           00235     GOTO    TECL_LOAD
+008E   2???           00236     GOTO    TECL_RES
+                      00237 
+008F                  00238 TECL_DELAYC3
+008F   2???           00239     CALL    DELAY_20ms
+0090   2???           00240     CALL    DELAY_20ms
+0091   1F06           00241     BTFSS   PORTB,6
+0092   2???           00242     GOTO    TECL_LOAD
+0093   2???           00243     GOTO    TECL_RES
+                      00244 
+0094                  00245 TECL_DELAYC4
+0094   2???           00246     CALL    DELAY_20ms
+0095   2???           00247     CALL    DELAY_20ms
+0096   1F86           00248     BTFSS   PORTB,7
+0097   2???           00249     GOTO    TECL_LOAD
+0098   2???           00250     GOTO    TECL_RES
+                      00251 
+                      00252 ;--------------------------------------------------------------
+                      00253 ; Guarda valor según la tecla detectada (1 a 16)
+                      00254 ;--------------------------------------------------------------
+0099                  00255 TECL_LOAD
+0099   082A           00256     MOVF    NTECL,W
+009A   390F           00257     ANDLW   0x0F            ; Limita a 0-15
+009B   00AC           00258     MOVWF   TEMP1           ; Guarda temporalmente
+                      00259     
+                      00260     ; Configurar PCLATH
+009C   30??           00261     MOVLW   HIGH TABLA_MAXdB    ;Cargo en W el byte mas alto de tabla max
+009D   008A           00262     MOVWF   PCLATH              ;Lo guardo en PCLATH para usarlo cuando se haga la asignacion en el PCL 
                             de la tabla
-                      00257         
-009C   082C           00258     MOVF    TEMP1,W
-009D   2???           00259     CALL    TABLA_MAXdB
-009E   00AB           00260     MOVWF   MAX_dB              ;Guardo el valor de la tecla presionada
-                      00261     
-                      00262     ; Restaurar PCLATH
-009F   018A           00263     CLRF    PCLATH              ;limpio el PCLATH para que no me afecte en otras partes del programa
-00A0   2???           00264     GOTO    TECL_RES            
-                      00265 ;--------------------------------------------------------------
-                      00266 ; Limpieza final de interrupción
-                      00267 ;--------------------------------------------------------------
-00A1                  00268 TECL_RES
-                      00269     ; *** ACTIVAR TODAS LAS FILAS PARA DETECTAR LIBERACIÓN ***
-00A1   300F           00270     MOVLW   b'00001111'         ; Activa todas las filas
-00A2   0086           00271     MOVWF   PORTB
-00A3   0000           00272     NOP 
-00A4   0000           00273     NOP
-                      00274     
-00A5                  00275 WAIT_RELEASE
-00A5   30F0           00276     MOVLW   b'11110000'
-00A6   0506           00277     ANDWF   PORTB,W             ;Me quedo con RB4?RB7 solamente (me quedo con las filas)
-00A7   3CF0           00278     SUBLW   b'11110000'         
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE  9
+                      00263         
+009E   082C           00264     MOVF    TEMP1,W
+009F   2???           00265     CALL    TABLA_MAXdB
+00A0   00AB           00266     MOVWF   MAX_dB              ;Guardo el valor de la tecla presionada
+                      00267     
+                      00268     ; Restaurar PCLATH
+00A1   018A           00269     CLRF    PCLATH              ;limpio el PCLATH para que no me afecte en otras partes del programa
+00A2   2???           00270     GOTO    TECL_RES            
+                      00271 ;--------------------------------------------------------------
+                      00272 ; Limpieza final de interrupción
+                      00273 ;--------------------------------------------------------------
+00A3                  00274 TECL_RES
+                      00275     ; *** ACTIVAR TODAS LAS FILAS PARA DETECTAR LIBERACIÓN ***
+00A3   300F           00276     MOVLW   b'00001111'         ; Activa todas las filas
+00A4   0086           00277     MOVWF   PORTB
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00A8   1D03           00279     BTFSS   STATUS,Z            ;si Z=0 entonces hay una tecla presionada
-00A9   2???           00280     GOTO    WAIT_RELEASE        ;repito hasta que no haya ninguna tecla presionada  
-00AA   01AA           00281     CLRF    NTECL        
-00AB   3000           00282     MOVLW   b'00000000'         ; Desactiva todas las filas
-00AC   0086           00283     MOVWF   PORTB
-00AD   0000           00284     NOP
-00AE   0000           00285     NOP
-00AF   0806           00286     MOVF    PORTB,W             ; Lectura para limpiar mismatch
-00B0   100B           00287     BCF     INTCON,RBIF
-00B1   2???           00288     GOTO    ISR_FIN
-                      00289 
-                      00290 ;--------------------------------------------------------------
-                      00291 ; Restaura registros y sale de interrupción
-                      00292 ;--------------------------------------------------------------
-00B2                  00293 ISR_FIN
-00B2   0821           00294     MOVF    STATUS_TEMP,W
-00B3   0083           00295     MOVWF   STATUS
-00B4   0820           00296     MOVF    W_TEMP,W
-00B5   0009           00297     RETFIE
-                      00298 ;==============================================================
-                      00299 ; DELAYS
-                      00300 ;==============================================================
-00B6                  00301 DELAY_2ms
-00B6   3050           00302     MOVLW   D'80'         
-00B7   00A2           00303     MOVWF   DELAY1_2ms
-00B8                  00304 LOOP1_2ms
-00B8   3008           00305     MOVLW   D'8'          
-00B9   00A3           00306     MOVWF   DELAY2_2ms
-00BA                  00307 LOOP2_2ms
-00BA   0000           00308     NOP
-00BB   0BA3           00309     DECFSZ  DELAY2_2ms, F
-00BC   2???           00310     GOTO    LOOP2_2ms
-00BD   0BA2           00311     DECFSZ  DELAY1_2ms, F
-00BE   2???           00312     GOTO    LOOP1_2ms
-00BF   0008           00313     RETURN
-                      00314 
-00C0                  00315 DELAY_20ms
-00C0   3050           00316     MOVLW   D'80'          
-00C1   00A4           00317     MOVWF   DELAY1_20ms
-00C2                  00318 LOOP1_20ms
-00C2   3050           00319     MOVLW   D'80'          
-00C3   00A5           00320     MOVWF   DELAY2_20ms
-00C4                  00321 LOOP2_20ms
-00C4   0000           00322     NOP
-00C5   0BA5           00323     DECFSZ  DELAY2_20ms, F
-00C6   2???           00324     GOTO    LOOP2_20ms
-00C7   0BA4           00325     DECFSZ  DELAY1_20ms, F
-00C8   2???           00326     GOTO    LOOP1_20ms
-00C9                  00327     RETURN
-                      00328 ;==============================================================
-                      00329 ; RUTINA ADC (actualiza ADC)
-                      00330 ;==============================================================
-00C9                  00331 ADC_READ
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 10
+00A5   0000           00278     NOP 
+00A6   0000           00279     NOP
+                      00280     
+00A7                  00281 WAIT_RELEASE
+00A7   30F0           00282     MOVLW   b'11110000'
+00A8   0506           00283     ANDWF   PORTB,W             ;Me quedo con RB4?RB7 solamente (me quedo con las filas)
+00A9   3CF0           00284     SUBLW   b'11110000'         
+00AA   1D03           00285     BTFSS   STATUS,Z            ;si Z=0 entonces hay una tecla presionada
+00AB   2???           00286     GOTO    WAIT_RELEASE        ;repito hasta que no haya ninguna tecla presionada  
+00AC   01AA           00287     CLRF    NTECL        
+00AD   3000           00288     MOVLW   b'00000000'         ; Desactiva todas las filas
+00AE   0086           00289     MOVWF   PORTB
+00AF   0000           00290     NOP
+00B0   0000           00291     NOP
+00B1   0806           00292     MOVF    PORTB,W             ; Lectura para limpiar mismatch
+00B2   100B           00293     BCF     INTCON,RBIF
+00B3   2???           00294     GOTO    ISR_FIN
+                      00295 
+                      00296 ;--------------------------------------------------------------
+                      00297 ; Restaura registros y sale de interrupción
+                      00298 ;--------------------------------------------------------------
+00B4                  00299 ISR_FIN
+00B4   0821           00300     MOVF    STATUS_TEMP,W
+00B5   0083           00301     MOVWF   STATUS
+00B6   0820           00302     MOVF    W_TEMP,W
+00B7   0009           00303     RETFIE
+                      00304 ;==============================================================
+                      00305 ; DELAYS
+                      00306 ;==============================================================
+00B8                  00307 DELAY_2ms
+00B8   3050           00308     MOVLW   D'80'         
+00B9   00A2           00309     MOVWF   DELAY1_2ms
+00BA                  00310 LOOP1_2ms
+00BA   3008           00311     MOVLW   D'8'          
+00BB   00A3           00312     MOVWF   DELAY2_2ms
+00BC                  00313 LOOP2_2ms
+00BC   0000           00314     NOP
+00BD   0BA3           00315     DECFSZ  DELAY2_2ms, F
+00BE   2???           00316     GOTO    LOOP2_2ms
+00BF   0BA2           00317     DECFSZ  DELAY1_2ms, F
+00C0   2???           00318     GOTO    LOOP1_2ms
+00C1   0008           00319     RETURN
+                      00320 
+00C2                  00321 DELAY_20ms
+00C2   3050           00322     MOVLW   D'80'          
+00C3   00A4           00323     MOVWF   DELAY1_20ms
+00C4                  00324 LOOP1_20ms
+00C4   3050           00325     MOVLW   D'80'          
+00C5   00A5           00326     MOVWF   DELAY2_20ms
+00C6                  00327 LOOP2_20ms
+00C6   0000           00328     NOP
+00C7   0BA5           00329     DECFSZ  DELAY2_20ms, F
+00C8   2???           00330     GOTO    LOOP2_20ms
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00332     ; ESPERA DE ADQUISICION (TACQ >= 20us)
-00C9   3032           00333     MOVLW   D'50'              ; se carga el 50 para generar un retardo para estabilizar la muestra en e
+00C9   0BA4           00331     DECFSZ  DELAY1_20ms, F
+00CA   2???           00332     GOTO    LOOP1_20ms
+00CB                  00333     RETURN
+                      00334 ;==============================================================
+                      00335 ; RUTINA ADC (actualiza ADC)
+                      00336 ;==============================================================
+00CB                  00337 ADC_READ
+                      00338     ; ESPERA DE ADQUISICION (TACQ >= 20us)
+00CB   3032           00339     MOVLW   D'50'              ; se carga el 50 para generar un retardo para estabilizar la muestra en e
                             l capacitor ~ 20us
-00CA   00AC           00334     MOVWF   TEMP1
-00CB                  00335 ACQ_LOOP
-00CB   0BAC           00336         DECFSZ  TEMP1,F         ;Decremento hasta que sea 0, (espero 50microsegundos)
-00CC   2???           00337         GOTO    ACQ_LOOP
-                      00338         
-                      00339         ; COMENZAR CONVERSION
-00CD   1283 1303      00340         BANKSEL ADCON0
-00CF   149F           00341         BSF     ADCON0,GO_DONE
-                      00342 
-00D0                  00343 WAIT_ADC
-00D0   189F           00344         BTFSC   ADCON0,GO_DONE
-00D1   2???           00345         GOTO    WAIT_ADC
-                      00346 
-00D2   1283 1303      00347         BANKSEL ADRESH
-00D4   081E           00348         MOVF    ADRESH,W           ; LECTURA (JUSTIF IZQ)
-00D5   0008           00349         RETURN
-                      00350 ;-------- TRANSMISION SERIE --------
-00D6                  00351 SEND_ADC
-Warning[207]: Found label after column 1. (LOOP_SENDADC)
-00D6                  00352     LOOP_SENDADC
-00D6   1683 1303      00353     BANKSEL TXSTA
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-00D8   1C98           00354     BTFSS   TXSTA, TRMT      ; Esperar buffer vacío
-00D9   2???           00355     GOTO    LOOP_SENDADC
-00DA   1283 1303      00356     BANKSEL ADRESH
-00DC   081E           00357     MOVF    ADRESH, W        ; ADC de 8 bits
-00DD   1283 1303      00358     BANKSEL TXREG
-00DF   0099           00359     MOVWF   TXREG            ; Enviar 1 byte crudo
-Warning[203]: Found opcode in column 1. (RETURN)
-00E0   0008           00360 RETURN
-                      00361 ;==============================================================
-                      00362 ; RUTINA Transformacion a UNI,DEC y CEN con TRANSMISION SERIE
-                      00363 ;==============================================================
-00E1                  00364 MAXdB_TRANS
-00E1   1283 1303      00365     BANKSEL MAX_dB
-00E3   082B           00366     MOVF    MAX_dB,W
-00E4   00AC           00367     MOVWF   TEMP1       ; número 0?255
-                      00368 
-00E5   01A8           00369     CLRF    CEN
-00E6   01A7           00370     CLRF    DECS
-                      00371 ; -------- CENTENAS (100) ---------
-00E7                  00372 CENT_LOOP
-00E7   3064           00373     MOVLW   D'100'
-00E8   02AC           00374     SUBWF   TEMP1,F
-00E9   1C03           00375     BTFSS   STATUS,C    ; ¿fue negativa?
-00EA   2???           00376     GOTO    FIX_CENT
-00EB   0AA8           00377     INCF    CEN,F
-00EC   2???           00378     GOTO    CENT_LOOP
-                      00379 
-00ED                  00380 FIX_CENT
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 11
+00CC   00AC           00340     MOVWF   TEMP1
+00CD                  00341 ACQ_LOOP
+00CD   0BAC           00342         DECFSZ  TEMP1,F         ;Decremento hasta que sea 0, (espero 50microsegundos)
+00CE   2???           00343         GOTO    ACQ_LOOP
+                      00344         
+                      00345         ; COMENZAR CONVERSION
+00CF   1283 1303      00346         BANKSEL ADCON0
+00D1   149F           00347         BSF     ADCON0,GO_DONE
+                      00348 
+00D2                  00349 WAIT_ADC
+00D2   189F           00350         BTFSC   ADCON0,GO_DONE
+00D3   2???           00351         GOTO    WAIT_ADC
+                      00352 
+00D4   1283 1303      00353         BANKSEL ADRESH
+00D6   081E           00354         MOVF    ADRESH,W           ; LECTURA (JUSTIF IZQ)
+00D7   0008           00355         RETURN
+                      00356         
+                      00357 ; ============================================================
+                      00358 ;  TRANS_ADC_DB
+                      00359 ;  Convierte ADRESH (0?255) -> ADC_DB (0?120 dB)
+                      00360 ;  Usa tabla + interpolación discreta.
+                      00361 ;
+                      00362 ;  REGISTROS USADOS:  TEMP1, TEMP2, INDEX, RESTO
+                      00363 ; ============================================================
+                      00364 
+                      00365 
+00D8                  00366 TRANS_ADC_DB
+                      00367     ; -------- copiar ADC --------
+00D8   1283 1303      00368     BANKSEL ADRESH
+00DA   081E           00369     MOVF    ADRESH,W
+00DB   00AC           00370     MOVWF   TEMP1              ; TEMP1 = ADC (0?255)
+                      00371 
+                      00372     ; -------- índice = ADC/16 --------
+00DC   082C           00373     MOVF    TEMP1,W
+00DD   39F0           00374     ANDLW   0xF0               ; deja nibble alto
+00DE   00AE           00375     MOVWF   INDEX              ; INDEX = nibble alto
+00DF   0EAE           00376     SWAPF   INDEX,F            ; lo pasa a nibble bajo
+                      00377 
+                      00378     ; -------- resto = ADC % 16 --------
+00E0   082C           00379     MOVF    TEMP1,W
+00E1   390F           00380     ANDLW   0x0F
+00E2   00AF           00381     MOVWF   RESTO
+                      00382 
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 11
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00ED   3064           00381     MOVLW   D'100'
-00EE   07AC           00382     ADDWF   TEMP1,F      ; restaurar TEMP1
-                      00383 
-                      00384 ; -------- DECENAS (10) ---------
-00EF                  00385 DEC_LOOP
-00EF   300A           00386     MOVLW   D'10'
-00F0   02AC           00387     SUBWF   TEMP1,F
-00F1   1C03           00388     BTFSS   STATUS,C
-00F2   2???           00389     GOTO    FIX_DEC
-00F3   0AA7           00390     INCF    DECS,F
-00F4   2???           00391     GOTO    DEC_LOOP
-                      00392 
-00F5                  00393 FIX_DEC
-00F5   300A           00394     MOVLW   D'10'
-00F6   07AC           00395     ADDWF   TEMP1,F      ; restaurar TEMP1
+                      00383     ; -------- cargar tabla[index] --------
+00E3   30??           00384     MOVLW   HIGH TABLA_MAXdB
+00E4   008A           00385     MOVWF   PCLATH
+                      00386 
+00E5   082E           00387     MOVF    INDEX,W
+00E6   2???           00388     CALL    TABLA_MAXdB
+00E7   00B0           00389     MOVWF   ADC_DB             ; valor base
+                      00390 
+                      00391     ; -------- delta = tabla[index+1] - tabla[index] --------
+00E8   0AAE           00392     INCF    INDEX,F            ; índice siguiente
+00E9   082E           00393     MOVF    INDEX,W
+00EA   2???           00394     CALL    TABLA_MAXdB
+00EB   00AC           00395     MOVWF   TEMP1              ; TEMP1 = tabla[i+1]
                       00396 
-                      00397 ; -------- UNIDADES --------
-00F7   082C           00398     MOVF    TEMP1,W      ; el resto final
-00F8   00A6           00399     MOVWF   UNI
-00F9   0008           00400     RETURN
+00EC   03AE           00397     DECF    INDEX,F
+00ED   082E           00398     MOVF    INDEX,W
+00EE   2???           00399     CALL    TABLA_MAXdB
+00EF   02AC           00400     SUBWF   TEMP1,F            ; TEMP1 = delta
                       00401 
-                      00402 ;==============================================================
-                      00403 ; RUTINA COMPARACION ADC - BARGRAPH
-                      00404 ;==============================================================
-00FA                  00405 MAXdB_COMP
-                      00406     ; limpiar LEDs
-00FA   1283 1303      00407     BANKSEL PORTA
-00FC   1205           00408     BCF PORTA,4     
-00FD   1105           00409     BCF PORTA,2     ; LED MAX
-00FE   1283 1303      00410     BANKSEL PORTC
-0100   1007           00411     BCF PORTC,0
-0101   1087           00412     BCF PORTC,1
-0102   1107           00413     BCF PORTC,2     ;LED MIN
-0103   1187           00414     BCF PORTC,3
-0104   1003           00415     BCF STATUS,C
+                      00402     ; ahora:
+                      00403     ;   TEMP1 = delta
+                      00404     ;   RESTO = resto 0?15
+                      00405 
+                      00406     ; -------- interpolación (delta * resto) --------
+00F0   01AD           00407     CLRF    TEMP2              ; acumulador = 0
+                      00408 
+00F1                  00409 MUL_LOOP
+00F1   08AF           00410     MOVF    RESTO,F
+00F2   1903           00411     BTFSC   STATUS,Z
+00F3   2???           00412     GOTO    MUL_DONE
+                      00413 
+00F4   082C           00414     MOVF    TEMP1,W
+00F5   07AD           00415     ADDWF   TEMP2,F           ; TEMP2 += delta
                       00416 
-                      00417     ; copiar MAX_dB
-0105   082B           00418     MOVF MAX_dB,W
-0106   00AC           00419     MOVWF TEMP1
-                      00420 
-                      00421 ;-------------------------------
-                      00422 ; LED MAX (A2)
-0107   1283 1303      00423     BANKSEL ADRESH
-0109   081E           00424     MOVF ADRESH,W
-010A   022C           00425     SUBWF TEMP1,W
-010B   1C03           00426     BTFSS STATUS,C
-010C   1505           00427     BSF PORTA,2
-010D   1003           00428     BCF STATUS,C
-                      00429 
-                      00430 ;-------------------------------
-                      00431 ; LED A4 
-010E   3014           00432     MOVLW .20
-010F   02AC           00433     SUBWF TEMP1,F
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 12
+00F6   03AF           00417     DECF    RESTO,F
+00F7   2???           00418     GOTO    MUL_LOOP
+                      00419 
+00F8                  00420 MUL_DONE
+                      00421     ; dividir por 16 ? nibble alto ? nibble bajo
+00F8   0E2D           00422     SWAPF   TEMP2,W           
+00F9   390F           00423     ANDLW   0x0F
+                      00424 
+00FA   1283 1303      00425     BANKSEL ADC_DB
+00FC   07B0           00426     ADDWF   ADC_DB,F           ; suma interpolación
+                      00427 
+00FD   018A           00428     CLRF    PCLATH
+00FE   0008           00429     RETURN
+                      00430     
+                      00431 ;==============================================================
+                      00432 ; TRANSMISION SERIE
+                      00433 ;==============================================================
+00FF                  00434 SEND_ADC
+Warning[207]: Found label after column 1. (LOOP_SENDADC)
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 12
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0110   1283 1303      00434     BANKSEL ADRESH
-0112   081E           00435     MOVF ADRESH,W
-0113   022C           00436     SUBWF TEMP1,W
-0114   1C03           00437     BTFSS STATUS,C
-0115   1605           00438     BSF PORTA,4
-0116   1003           00439     BCF STATUS,C
-                      00440 
-                      00441 ;-------------------------------
-                      00442 ; LED C0
-0117   3014           00443     MOVLW .20
-0118   02AC           00444     SUBWF TEMP1,F
-0119   1283 1303      00445     BANKSEL ADRESH
-011B   081E           00446     MOVF ADRESH,W
-011C   022C           00447     SUBWF TEMP1,W
-011D   1C03           00448     BTFSS STATUS,C
-011E   1407           00449     BSF PORTC,0
-011F   1003           00450     BCF STATUS,C
-                      00451 
-                      00452 ;-------------------------------
-                      00453 ; LED C1
-0120   3014           00454     MOVLW .20
-0121   02AC           00455     SUBWF TEMP1,F
-0122   1283 1303      00456     BANKSEL ADRESH
-0124   081E           00457     MOVF ADRESH,W
-0125   022C           00458     SUBWF TEMP1,W
-0126   1C03           00459     BTFSS STATUS,C
-0127   1487           00460     BSF PORTC,1
-0128   1003           00461     BCF STATUS,C
-                      00462 
-                      00463 ;-------------------------------
-                      00464 ; LED C2
-0129   3014           00465     MOVLW .20
-012A   02AC           00466     SUBWF TEMP1,F
-012B   1283 1303      00467     BANKSEL ADRESH
-012D   081E           00468     MOVF ADRESH,W
-012E   022C           00469     SUBWF TEMP1,W
-012F   1C03           00470     BTFSS STATUS,C
-0130   1507           00471     BSF PORTC,2
-0131   1003           00472     BCF STATUS,C
-                      00473 
-                      00474 ;-------------------------------
-                      00475 ; LED MIN (C3)
-0132   3014           00476     MOVLW .20
-0133   02AC           00477     SUBWF TEMP1,F
-0134   1283 1303      00478     BANKSEL ADRESH
-0136   081E           00479     MOVF ADRESH,W
-0137   022C           00480     SUBWF TEMP1,W
-0138   1C03           00481     BTFSS STATUS,C
-0139   1587           00482     BSF PORTC,3
-013A   1003           00483     BCF STATUS,C
-                      00484     
-013B   0008           00485     RETURN
-                      00486 
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 13
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-                      00487 ;==============================================================
-                      00488 ; RUTINA MUESTREO (actualiza displays o salidas)
-                      00489 ;==============================================================
-013C                  00490 MUESTREO
-                      00491     ; ===== DIGITO UNIDADES =====
-013C   1283 1303      00492     BANKSEL PORTE
-013E   1009           00493     BCF     PORTE,0
-013F   1089           00494     BCF     PORTE,1
-0140   1109           00495     BCF     PORTE,2
-0141   1283 1303      00496     BANKSEL PORTA
-0143   1685           00497     BSF     PORTA,5
-                      00498     
-0144   30??           00499     MOVLW HIGH TABLA_TECL   ; <<< cargar página
-0145   008A           00500     MOVWF PCLATH
-0146   0826           00501     MOVF    UNI,W
-0147   2???           00502     CALL    TABLA_TECL
-0148   018A           00503     CLRF    PCLATH          ; <<< restaurar
-0149   0088           00504     MOVWF   PORTD
-014A   2???           00505     CALL    DELAY_2ms
-                      00506 
-                      00507     ; ===== DIGITO DECENAS =====
-014B   1283 1303      00508     BANKSEL PORTE
-014D   1009           00509     BCF     PORTE,0
-014E   1089           00510     BCF     PORTE,1
-014F   1509           00511     BSF     PORTE,2
-0150   1283 1303      00512     BANKSEL PORTA
-0152   1285           00513     BCF     PORTA,5
-                      00514 
-0153   30??           00515     MOVLW HIGH TABLA_TECL
-0154   008A           00516     MOVWF PCLATH
-0155   0827           00517     MOVF    DECS,W
-0156   2???           00518     CALL    TABLA_TECL
-0157   018A           00519     CLRF    PCLATH
-0158   0088           00520     MOVWF   PORTD
-0159   2???           00521     CALL    DELAY_2ms
-                      00522 
-                      00523     ; ===== DIGITO CENTENAS =====
-015A   1283 1303      00524     BANKSEL PORTE
-015C   1409           00525     BSF     PORTE,0
-015D   1089           00526     BCF     PORTE,1
-015E   1109           00527     BCF     PORTE,2
-015F   1283 1303      00528     BANKSEL PORTA
-0161   1285           00529     BCF     PORTA,5
-                      00530 
-0162   30??           00531     MOVLW HIGH TABLA_TECL
-0163   008A           00532     MOVWF PCLATH
-0164   0828           00533     MOVF    CEN,W
-0165   2???           00534     CALL    TABLA_TECL
-0166   018A           00535     CLRF    PCLATH
-0167   0088           00536     MOVWF   PORTD
-0168   2???           00537     CALL    DELAY_2ms
-                      00538     
-                      00539     ; ===== GUARDA (LETRA ?dE?) =====
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 14
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-0169   1283 1303      00540     BANKSEL PORTE
-016B   1009           00541     BCF     PORTE,0
-016C   1489           00542     BSF     PORTE,1
-016D   1109           00543     BCF     PORTE,2
-016E   1283 1303      00544     BANKSEL PORTA
-0170   1285           00545     BCF     PORTA,5
-                      00546 
-0171   30DE           00547     MOVLW b'11011110'
-0172   0088           00548     MOVWF PORTD
-0173   2???           00549     CALL DELAY_2ms
-                      00550     
+00FF                  00435     LOOP_SENDADC
+00FF   1683 1303      00436     BANKSEL TXSTA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0101   1C98           00437     BTFSS   TXSTA, TRMT      ; Esperar buffer vacío
+0102   2???           00438     GOTO    LOOP_SENDADC
+0103   1283 1303      00439     BANKSEL ADC_DB
+0105   0830           00440     MOVF    ADC_DB, W        ; ADC de 8 bits
+0106   1283 1303      00441     BANKSEL TXREG
+0108   0099           00442     MOVWF   TXREG            ; Enviar 1 byte crudo
 Warning[203]: Found opcode in column 1. (RETURN)
-0174   0008           00551 RETURN
-                      00552 
-                      00553 ;==============================================================
-                      00554 ; TABLA DE CONVERSIÓN PARA MAX_dB
-                      00555 ;==============================================================
-0175                  00556 TABLA_MAXdB
-0175   0782           00557     ADDWF PCL,F
-0176   3478           00558     RETLW .120  ; 0
-0177   3480           00559     RETLW .128  ; 1
-0178   3488           00560     RETLW .136  ; 2
-0179   3490           00561     RETLW .144  ; 3
-017A   3498           00562     RETLW .152  ; 4
-017B   34A0           00563     RETLW .160  ; 5
-017C   34A8           00564     RETLW .168  ; 6
-017D   34B0           00565     RETLW .176  ; 7
-017E   34C0           00566     RETLW .192  ; 8
-017F   34C8           00567     RETLW .200  ; 9
-0180   34D0           00568     RETLW .208  ; A
-0181   34D8           00569     RETLW .216  ; B
-0182   34E0           00570     RETLW .224  ; C
-0183   34E8           00571     RETLW .232  ; D
-0184   34F0           00572     RETLW .240  ; E
-0185   34FA           00573     RETLW .250  ; F
-                      00574 
-                      00575 ;==============================================================
-                      00576 ; TABLA DE CONVERSIÓN PARA DISPLAY 7 SEGMENTOS
-                      00577 ;==============================================================
-0186                  00578 TABLA_TECL
-0186   0782           00579     ADDWF PCL,F
-0187   343F           00580     RETLW b'00111111'  ; 0
-0188   3406           00581     RETLW b'00000110'  ; 1
-0189   345B           00582     RETLW b'01011011'  ; 2
-018A   344F           00583     RETLW b'01001111'  ; 3
-018B   3466           00584     RETLW b'01100110'  ; 4
-018C   346D           00585     RETLW b'01101101'  ; 5
-018D   347D           00586     RETLW b'01111101'  ; 6
-018E   3407           00587     RETLW b'00000111'  ; 7
-018F   347F           00588     RETLW b'01111111'  ; 8
-0190   346F           00589     RETLW b'01101111'  ; 9
+0109   0008           00443 RETURN
+                      00444 ;==============================================================
+                      00445 ; RUTINA Transformacion a UNI,DEC y CEN con TRANSMISION SERIE
+                      00446 ;==============================================================
+010A                  00447 MAXdB_TRANS
+010A   1283 1303      00448     BANKSEL MAX_dB
+010C   082B           00449     MOVF    MAX_dB,W
+010D   00AC           00450     MOVWF   TEMP1       ; número 0?255
+                      00451 
+010E   01A8           00452     CLRF    CEN
+010F   01A7           00453     CLRF    DECS
+                      00454 ; -------- CENTENAS (100) ---------
+0110                  00455 CENT_LOOP
+0110   3064           00456     MOVLW   D'100'
+0111   02AC           00457     SUBWF   TEMP1,F
+0112   1C03           00458     BTFSS   STATUS,C    ; ¿fue negativa?
+0113   2???           00459     GOTO    FIX_CENT
+0114   0AA8           00460     INCF    CEN,F
+0115   2???           00461     GOTO    CENT_LOOP
+                      00462 
+0116                  00463 FIX_CENT
+0116   3064           00464     MOVLW   D'100'
+0117   07AC           00465     ADDWF   TEMP1,F      ; restaurar TEMP1
+                      00466 
+                      00467 ; -------- DECENAS (10) ---------
+0118                  00468 DEC_LOOP
+0118   300A           00469     MOVLW   D'10'
+0119   02AC           00470     SUBWF   TEMP1,F
+011A   1C03           00471     BTFSS   STATUS,C
+011B   2???           00472     GOTO    FIX_DEC
+011C   0AA7           00473     INCF    DECS,F
+011D   2???           00474     GOTO    DEC_LOOP
+                      00475 
+011E                  00476 FIX_DEC
+011E   300A           00477     MOVLW   D'10'
+011F   07AC           00478     ADDWF   TEMP1,F      ; restaurar TEMP1
+                      00479 
+                      00480 ; -------- UNIDADES --------
+0120   082C           00481     MOVF    TEMP1,W      ; el resto final
+0121   00A6           00482     MOVWF   UNI
+0122   0008           00483     RETURN
+                      00484 
+                      00485 ;==============================================================
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00486 ; RUTINA COMPARACION ADC - BARGRAPH
+                      00487 ;==============================================================
+0123                  00488 MAXdB_COMP
+                      00489     ; limpiar LEDs
+0123   1283 1303      00490     BANKSEL PORTA
+0125   1205           00491     BCF PORTA,4     
+0126   1105           00492     BCF PORTA,2     ; LED MAX
+0127   1283 1303      00493     BANKSEL PORTC
+0129   1007           00494     BCF PORTC,0
+012A   1087           00495     BCF PORTC,1
+012B   1107           00496     BCF PORTC,2     ;LED MIN
+012C   1187           00497     BCF PORTC,3
+012D   1003           00498     BCF STATUS,C
+                      00499 
+                      00500     ; copiar MAX_dB
+012E   082B           00501     MOVF MAX_dB,W
+012F   00AC           00502     MOVWF TEMP1
+                      00503 
+                      00504 ;-------------------------------
+                      00505 ; LED MAX (A2)
+0130   1283 1303      00506     BANKSEL ADC_DB
+0132   0830           00507     MOVF ADC_DB,W
+0133   022C           00508     SUBWF TEMP1,W
+0134   1C03           00509     BTFSS STATUS,C
+0135   1505           00510     BSF PORTA,2
+0136   1003           00511     BCF STATUS,C
+                      00512 
+                      00513 ;-------------------------------
+                      00514 ; LED A4 
+0137   300A           00515     MOVLW .10
+0138   02AC           00516     SUBWF TEMP1,F
+0139   1283 1303      00517     BANKSEL ADC_DB
+013B   0830           00518     MOVF ADC_DB,W
+013C   022C           00519     SUBWF TEMP1,W
+013D   1C03           00520     BTFSS STATUS,C
+013E   1605           00521     BSF PORTA,4
+013F   1003           00522     BCF STATUS,C
+                      00523 
+                      00524 ;-------------------------------
+                      00525 ; LED C0
+0140   300A           00526     MOVLW .10
+0141   02AC           00527     SUBWF TEMP1,F
+0142   1283 1303      00528     BANKSEL ADC_DB
+0144   0830           00529     MOVF ADC_DB,W
+0145   022C           00530     SUBWF TEMP1,W
+0146   1C03           00531     BTFSS STATUS,C
+0147   1407           00532     BSF PORTC,0
+0148   1003           00533     BCF STATUS,C
+                      00534 
+                      00535 ;-------------------------------
+                      00536 ; LED C1
+0149   300A           00537     MOVLW .10
+014A   02AC           00538     SUBWF TEMP1,F
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+014B   1283 1303      00539     BANKSEL ADC_DB
+014D   0830           00540     MOVF ADC_DB,W
+014E   022C           00541     SUBWF TEMP1,W
+014F   1C03           00542     BTFSS STATUS,C
+0150   1487           00543     BSF PORTC,1
+0151   1003           00544     BCF STATUS,C
+                      00545 
+                      00546 ;-------------------------------
+                      00547 ; LED C2
+0152   300A           00548     MOVLW .10
+0153   02AC           00549     SUBWF TEMP1,F
+0154   1283 1303      00550     BANKSEL ADC_DB
+0156   0830           00551     MOVF ADC_DB,W
+0157   022C           00552     SUBWF TEMP1,W
+0158   1C03           00553     BTFSS STATUS,C
+0159   1507           00554     BSF PORTC,2
+015A   1003           00555     BCF STATUS,C
+                      00556 
+                      00557 ;-------------------------------
+                      00558 ; LED MIN (C3)
+015B   300A           00559     MOVLW .10
+015C   02AC           00560     SUBWF TEMP1,F
+015D   1283 1303      00561     BANKSEL ADC_DB
+015F   0830           00562     MOVF ADC_DB,W
+0160   022C           00563     SUBWF TEMP1,W
+0161   1C03           00564     BTFSS STATUS,C
+0162   1587           00565     BSF PORTC,3
+0163   1003           00566     BCF STATUS,C
+                      00567     
+0164   0008           00568     RETURN
+                      00569 
+                      00570 ;==============================================================
+                      00571 ; RUTINA MUESTREO (actualiza displays o salidas)
+                      00572 ;==============================================================
+0165                  00573 MUESTREO
+                      00574     ; ===== DIGITO UNIDADES =====
+0165   1283 1303      00575     BANKSEL PORTE
+0167   1009           00576     BCF     PORTE,0
+0168   1089           00577     BCF     PORTE,1
+0169   1109           00578     BCF     PORTE,2
+016A   1283 1303      00579     BANKSEL PORTA
+016C   1685           00580     BSF     PORTA,5
+                      00581     
+016D   30??           00582     MOVLW HIGH TABLA_TECL   ; <<< cargar página
+016E   008A           00583     MOVWF PCLATH
+016F   0826           00584     MOVF    UNI,W
+0170   2???           00585     CALL    TABLA_TECL
+0171   018A           00586     CLRF    PCLATH          ; <<< restaurar
+0172   0088           00587     MOVWF   PORTD
+0173   2???           00588     CALL    DELAY_2ms
+                      00589 
+                      00590     ; ===== DIGITO DECENAS =====
+0174   1283 1303      00591     BANKSEL PORTE
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0176   1009           00592     BCF     PORTE,0
+0177   1089           00593     BCF     PORTE,1
+0178   1509           00594     BSF     PORTE,2
+0179   1283 1303      00595     BANKSEL PORTA
+017B   1285           00596     BCF     PORTA,5
+                      00597 
+017C   30??           00598     MOVLW HIGH TABLA_TECL
+017D   008A           00599     MOVWF PCLATH
+017E   0827           00600     MOVF    DECS,W
+017F   2???           00601     CALL    TABLA_TECL
+0180   018A           00602     CLRF    PCLATH
+0181   0088           00603     MOVWF   PORTD
+0182   2???           00604     CALL    DELAY_2ms
+                      00605 
+                      00606     ; ===== DIGITO CENTENAS =====
+0183   1283 1303      00607     BANKSEL PORTE
+0185   1409           00608     BSF     PORTE,0
+0186   1089           00609     BCF     PORTE,1
+0187   1109           00610     BCF     PORTE,2
+0188   1283 1303      00611     BANKSEL PORTA
+018A   1285           00612     BCF     PORTA,5
+                      00613 
+018B   30??           00614     MOVLW HIGH TABLA_TECL
+018C   008A           00615     MOVWF PCLATH
+018D   0828           00616     MOVF    CEN,W
+018E   2???           00617     CALL    TABLA_TECL
+018F   018A           00618     CLRF    PCLATH
+0190   0088           00619     MOVWF   PORTD
+0191   2???           00620     CALL    DELAY_2ms
+                      00621     
+                      00622     ; ===== GUARDA (LETRA ?dE?) =====
+0192   1283 1303      00623     BANKSEL PORTE
+0194   1009           00624     BCF     PORTE,0
+0195   1489           00625     BSF     PORTE,1
+0196   1109           00626     BCF     PORTE,2
+0197   1283 1303      00627     BANKSEL PORTA
+0199   1285           00628     BCF     PORTA,5
+                      00629 
+019A   30DE           00630     MOVLW b'11011110'
+019B   0088           00631     MOVWF PORTD
+019C   2???           00632     CALL DELAY_2ms
+                      00633     
+Warning[203]: Found opcode in column 1. (RETURN)
+019D   0008           00634 RETURN
+                      00635 
+                      00636 ;==============================================================
+                      00637 ; TABLA DE CONVERSIÓN PARA MAX_dB
+                      00638 ;==============================================================
+019E                  00639 TABLA_MAXdB
+019E   0782           00640     ADDWF PCL, F
+019F   3432           00641     RETLW .50
+01A0   3436           00642     RETLW .54
+01A1   343A           00643     RETLW .58
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01A2   343E           00644     RETLW .62   
+01A3   3442           00645     RETLW .66
+01A4   3446           00646     RETLW .70
+01A5   344A           00647     RETLW .74
+01A6   344E           00648     RETLW .78
+01A7   3452           00649     RETLW .82
+01A8   3456           00650     RETLW .86
+01A9   345A           00651     RETLW .90
+01AA   345E           00652     RETLW .94
+01AB   3462           00653     RETLW .98
+01AC   3469           00654     RETLW .105
+01AD   346E           00655     RETLW .110
+01AE   3473           00656     RETLW .115
+                      00657 
+                      00658 ;==============================================================
+                      00659 ; TABLA DE CONVERSIÓN PARA DISPLAY 7 SEGMENTOS
+                      00660 ;==============================================================
+01AF                  00661 TABLA_TECL
+01AF   0782           00662     ADDWF PCL,F
+01B0   343F           00663     RETLW b'00111111'  ; 0
+01B1   3406           00664     RETLW b'00000110'  ; 1
+01B2   345B           00665     RETLW b'01011011'  ; 2
+01B3   344F           00666     RETLW b'01001111'  ; 3
+01B4   3466           00667     RETLW b'01100110'  ; 4
+01B5   346D           00668     RETLW b'01101101'  ; 5
+01B6   347D           00669     RETLW b'01111101'  ; 6
+01B7   3407           00670     RETLW b'00000111'  ; 7
+01B8   347F           00671     RETLW b'01111111'  ; 8
+01B9   346F           00672     RETLW b'01101111'  ; 9
 Warning[205]: Found directive in column 1. (END)
-2FF1                  00590 END
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 15
+2FF1                  00673 END
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 17
 
 
 SYMBOL TABLE
@@ -835,12 +931,13 @@ ABDOVF                            00000007
 ACKDT                             00000005
 ACKEN                             00000004
 ACKSTAT                           00000006
-ACQ_LOOP                          000000CB
+ACQ_LOOP                          000000CD
 ADCON0                            0000001F
 ADCON1                            0000009F
 ADCS0                             00000006
 ADCS1                             00000007
-ADC_READ                          000000C9
+ADC_DB                            00000030
+ADC_READ                          000000CB
 ADDEN                             00000003
 ADFM                              00000007
 ADIE                              00000006
@@ -882,13 +979,13 @@ BRG3                              00000003
 BRG4                              00000004
 BRG5                              00000005
 BRG6                              00000006
-BRG7                              00000007
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 16
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+BRG7                              00000007
 BRG8                              00000000
 BRG9                              00000001
 BRGH                              00000002
@@ -941,13 +1038,13 @@ CCPR2                             0000001B
 CCPR2H                            0000001C
 CCPR2L                            0000001B
 CEN                               00000028
-CENT_LOOP                         000000E7
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 17
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CENT_LOOP                         00000110
 CHS0                              00000002
 CHS1                              00000003
 CHS2                              00000004
@@ -967,13 +1064,13 @@ DC1B1                             00000005
 DC2B0                             00000004
 DC2B1                             00000005
 DECS                              00000027
-DEC_LOOP                          000000EF
+DEC_LOOP                          00000118
 DELAY1_20ms                       00000024
 DELAY1_2ms                        00000022
 DELAY2_20ms                       00000025
 DELAY2_2ms                        00000023
-DELAY_20ms                        000000C0
-DELAY_2ms                         000000B6
+DELAY_20ms                        000000C2
+DELAY_2ms                         000000B8
 D_A                               00000005
 D_NOT_A                           00000005
 ECCPAS                            0000009C
@@ -993,26 +1090,27 @@ EEIF                              00000004
 EEPGD                             00000007
 F                                 00000001
 FERR                              00000002
-FIX_CENT                          000000ED
-FIX_DEC                           000000F5
+FIX_CENT                          00000116
+FIX_DEC                           0000011E
 FSR                               00000004
 FVREN                             00000000
 GCEN                              00000007
 GIE                               00000007
 GO                                00000001
-GO_DONE                           00000001
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 18
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+GO_DONE                           00000001
 GO_NOT_DONE                       00000001
 HTS                               00000002
 I2C_DATA                          00000005
 I2C_READ                          00000002
 I2C_START                         00000003
 I2C_STOP                          00000004
+INDEX                             0000002E
 INDF                              00000000
 INICIO                            00000005
 INI_ADC                           
@@ -1042,37 +1140,39 @@ IRCF0                             00000004
 IRCF1                             00000005
 IRCF2                             00000006
 IRP                               00000007
-ISR_FIN                           000000B2
-ISR_INICIO                        00000066
+ISR_FIN                           000000B4
+ISR_INICIO                        00000068
 ISR_TECL                          00000029
-LOOP1_20ms                        000000C2
-LOOP1_2ms                         000000B8
-LOOP2_20ms                        000000C4
-LOOP2_2ms                         000000BA
-LOOP_SENDADC                      000000D6
+LOOP1_20ms                        000000C4
+LOOP1_2ms                         000000BA
+LOOP2_20ms                        000000C6
+LOOP2_2ms                         000000BC
+LOOP_SENDADC                      000000FF
 LTS                               00000001
-MAIN_LOOP                         0000005F
+MAIN_LOOP                         00000060
 MAX_dB                            0000002B
-MAXdB_COMP                        000000FA
-MAXdB_TRANS                       000000E1
+MAXdB_COMP                        00000123
+MAXdB_TRANS                       0000010A
 MC1OUT                            00000007
 MC2OUT                            00000006
 MSK                               00000093
-MSK0                              00000000
-MSK1                              00000001
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 19
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+MSK0                              00000000
+MSK1                              00000001
 MSK2                              00000002
 MSK3                              00000003
 MSK4                              00000004
 MSK5                              00000005
 MSK6                              00000006
 MSK7                              00000007
-MUESTREO                          0000013C
+MUESTREO                          00000165
+MUL_DONE                          000000F8
+MUL_LOOP                          000000F1
 NOT_A                             00000005
 NOT_ADDRESS                       00000005
 NOT_BO                            00000000
@@ -1115,16 +1215,16 @@ PIE2                              0000008D
 PIR1                              0000000C
 PIR2                              0000000D
 PORTA                             00000005
-PORTB                             00000006
-PORTC                             00000007
-PORTD                             00000008
-PORTE                             00000009
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 20
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
 PR2                               00000092
 PRSEN                             00000007
 PS0                               00000000
@@ -1174,16 +1274,16 @@ RCIDL                             00000006
 RCIE                              00000005
 RCIF                              00000005
 RCREG                             0000001A
-RCSTA                             00000018
-RD                                00000000
-RD0                               00000000
-RD1                               00000001
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 21
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
 RD2                               00000002
 RD3                               00000003
 RD4                               00000004
@@ -1195,6 +1295,7 @@ RE1                               00000001
 RE2                               00000002
 RE3                               00000003
 READ_WRITE                        00000002
+RESTO                             0000002F
 RP0                               00000005
 RP1                               00000006
 RSEN                              00000001
@@ -1208,7 +1309,7 @@ SCKP                              00000004
 SCS                               00000000
 SEN                               00000000
 SENDB                             00000003
-SEND_ADC                          000000D6
+SEND_ADC                          000000FF
 SMP                               00000007
 SPBRG                             00000099
 SPBRGH                            0000009A
@@ -1232,17 +1333,17 @@ SSPMSK                            00000093
 SSPOV                             00000006
 SSPSTAT                           00000094
 STATUS                            00000003
-STATUS_TEMP                       00000021
-STRA                              00000000
-STRB                              00000001
-STRC                              00000002
-STRD                              00000003
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 22
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+STATUS_TEMP                       00000021
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
 STRSYNC                           00000004
 SWDTEN                            00000000
 SYNC                              00000004
@@ -1262,17 +1363,18 @@ T1SYNC                            00000002
 T2CKPS0                           00000000
 T2CKPS1                           00000001
 T2CON                             00000012
-TABLA_MAXdB                       00000175
-TABLA_TECL                        00000186
-TECL_DELAYC1                      00000083
-TECL_DELAYC2                      00000088
-TECL_DELAYC3                      0000008D
-TECL_DELAYC4                      00000092
-TECL_LOAD                         00000097
-TECL_RES                          000000A1
+TABLA_MAXdB                       0000019E
+TABLA_TECL                        000001AF
+TECL_DELAYC1                      00000085
+TECL_DELAYC2                      0000008A
+TECL_DELAYC3                      0000008F
+TECL_DELAYC4                      00000094
+TECL_LOAD                         00000099
+TECL_RES                          000000A3
 TEMP1                             0000002C
-TEST_COL                          00000070
-TEST_FIL                          0000007D
+TEMP2                             0000002D
+TEST_COL                          00000072
+TEST_FIL                          0000007F
 TMR0                              00000001
 TMR0IE                            00000005
 TMR0IF                            00000002
@@ -1290,18 +1392,19 @@ TMR2IF                            00000001
 TMR2ON                            00000002
 TOUTPS0                           00000003
 TOUTPS1                           00000004
-TOUTPS2                           00000005
-TOUTPS3                           00000006
-TRISA                             00000085
-TRISA0                            00000000
-TRISA1                            00000001
-TRISA2                            00000002
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 23
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRANS_ADC_DB                      000000D8
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
 TRISA3                            00000003
 TRISA4                            00000004
 TRISA5                            00000005
@@ -1348,6 +1451,12 @@ TUN4                              00000004
 TX8_9                             00000006
 TX9                               00000006
 TX9D                              00000000
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TXD8                              00000000
 TXEN                              00000005
 TXIE                              00000004
@@ -1355,12 +1464,6 @@ TXIF                              00000004
 TXREG                             00000019
 TXSTA                             00000098
 UA                                00000001
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 24
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 ULPWUE                            00000005
 ULPWUIE                           00000002
 ULPWUIF                           00000002
@@ -1377,8 +1480,8 @@ VROE                              00000006
 VRR                               00000005
 VRSS                              00000004
 W                                 00000000
-WAIT_ADC                          000000D0
-WAIT_RELEASE                      000000A5
+WAIT_ADC                          000000D2
+WAIT_RELEASE                      000000A7
 WCOL                              00000007
 WDTCON                            00000105
 WDTPS0                            00000001
@@ -1407,6 +1510,12 @@ _BOR4V_BOR40V                     00003FFF
 _BOREN_NSLEEP                     00003EFF
 _BOREN_OFF                        00003CFF
 _BOREN_ON                         00003FFF
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _BOREN_SBODEN                     00003DFF
 _BOR_NSLEEP                       00003EFF
 _BOR_OFF                          00003CFF
@@ -1414,12 +1523,6 @@ _BOR_ON                           00003FFF
 _BOR_SBODEN                       00003DFF
 _CONFIG1                          00002007
 _CONFIG2                          00002008
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 25
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _CPD_OFF                          00003FFF
 _CPD_ON                           00003F7F
 _CP_OFF                           00003FFF
@@ -1466,17 +1569,17 @@ _WDT_OFF                          00003FF7
 _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
 _WRT_256                          00003DFF
+MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  16:57:53         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _WRT_HALF                         000039FF
 _WRT_OFF                          00003FFF
 _XT_OSC                           00003FF9
 __16F887                          00000001
-    RETURN                        000000C9
-
-MPASM 5.81            TRABAJO5INTEGRADOR.ASM   11-17-2025  13:50:24         PAGE 26
-
-
-
-
+    RETURN                        000000CB
 
 Errors   :     0
 Warnings :    32 reported,     0 suppressed
