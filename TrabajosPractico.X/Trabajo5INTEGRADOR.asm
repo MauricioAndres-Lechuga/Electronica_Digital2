@@ -56,6 +56,24 @@ INI_PORTD MACRO
    CLRF	    TRISD ;PORTD salida, no tiene ANSEL, solo digital
 ENDM
    
+INI_PORTC MACRO
+    BANKSEL TRISC
+    BCF	    TRISC,0
+    BCF	    TRISC,1
+    BCF	    TRISC,2
+    BCF	    TRISC,3
+ENDM
+    
+INI_PORTA MACRO
+    BANKSEL ANSEL
+    BCF	    ANSEL,2
+    BCF	    ANSEL,4
+    BANKSEL TRISA
+    BCF	    TRISA,2
+    BCF	    TRISA,4
+    BCF	    TRISA,5
+ENDM
+    
 INI_TECL MACRO
    BANKSEL OPTION_REG
    BCF OPTION_REG,7	      ; Habilita pull-ups en PORTB (RBPU=0)
@@ -66,15 +84,19 @@ ENDM
    
 INI_PUERTOS MACRO
    BANKSEL PORTB
+   CLRF	PORTA
+   CLRF	PORTC
+   CLRF	PORTE
    CLRF PORTB
    CLRF PORTD
    CLRF NTECL
    CLRF UNI
    CLRF DECS
    CLRF CEN
-   CLRF	MAX_DB
+   MOVLW    .200
+   MOVWF    MAX_dB
 ENDM
-   
+
 INI_INTER  MACRO
    BANKSEL INTCON
    BCF INTCON, RBIF      ; Limpia bandera anterior
@@ -84,42 +106,48 @@ INI_INTER  MACRO
 ENDM
 
 INI_ADC MACRO
-   BANKSEL ANSEL
-   BSF     ANSEL,0        ; AN0 analógico
-   BANKSEL TRISA
-   BSF     TRISA,0        ; RA0 entrada
-   BANKSEL ADCON1
-   MOVLW   b'10000000'    ; ADFM=1, Vref=Vdd/Vss
-   MOVWF   ADCON1
-   BANKSEL ADCON0
-   MOVLW   b'01000001'    ; ADCS=01 (Fosc/8), AN0, ADON=1
-   MOVWF   ADCON0
+    ; HABILITAR AN0 COMO ANALOGICO
+    BANKSEL ANSEL
+    BSF     ANSEL,0            ; RA0 analógico
+
+    ; RA0 como entrada
+    BANKSEL TRISA
+    BSF     TRISA,0
+
+    ; ADCON1 CONFIGURA REFERENCIAS (16F887 NO TIENE ADFM)
+    BANKSEL ADCON1
+    MOVLW   b'00000000'        ; Vref = Vdd/Vss
+
+    ; ADCON0 CONFIGURA CANAL Y CLOCK
+    BANKSEL ADCON0
+    MOVLW   b'10000001'        ; ADCS=10 (Fosc/32), CHS=000 (AN0), ADON=1
+    MOVWF   ADCON0
 ENDM
 ;==============================================================
 ; PROGRAMA PRINCIPAL
 ;==============================================================
-INICIO       
-INI_PORTB
+INICIO   
 INI_PORTE
+INI_PORTB
+INI_PORTA
+INI_PORTC
 INI_PORTD
 INI_TECL
 INI_PUERTOS
-INI_INTER
 INI_ADC
-
-LOOP_MUESTREO
-   CALL ADC_READ
-   CALL ADC_TRANS
-   CALL	MAXdB_COMP
-   CALL MUESTREO             ; Actualiza displays o salida
-   GOTO LOOP_MUESTREO
-    
+INI_INTER
+MAIN_LOOP
+    CALL ADC_READ
+    CALL ADC_TRANS
+    CALL MAXdB_COMP          ; Actualiza displays o salida
+    NOP
+    GOTO    MAIN_LOOP
 ;==============================================================
 ; RUTINA DE INTERRUPCIÓN
 ;==============================================================
 ISR_INICIO    
     MOVWF   W_TEMP
-    MOVFW   STATUS
+    MOVF    STATUS,W
     MOVWF   STATUS_TEMP
 
     BTFSS   INTCON,RBIF
@@ -200,15 +228,24 @@ TECL_DELAYC4
     GOTO    TECL_RES
 
 ;--------------------------------------------------------------
-; Guarda valor según la tecla y fila detectada
+; Guarda valor según la tecla detectada (1 a 16)
 ;--------------------------------------------------------------
 TECL_LOAD
-    MOVF    NTECL,W        
+    MOVF    NTECL,W
+    ANDLW   0x0F            ; Limita a 0-15
+    MOVWF   TEMP1           ; Guarda temporalmente
+    
+    ; Configurar PCLATH
+    MOVLW   HIGH TABLA_MAXdB
+    MOVWF   PCLATH
+    
+    MOVF    TEMP1,W
+    CALL    TABLA_MAXdB
     MOVWF   MAX_dB
-    BCF     INTCON,RBIE         
-    BCF     INTCON,GIE          
+    
+    ; Restaurar PCLATH
+    CLRF    PCLATH
     GOTO    TECL_RES
- 
 ;--------------------------------------------------------------
 ; Limpieza final de interrupción
 ;--------------------------------------------------------------
@@ -216,7 +253,7 @@ TECL_RES
     ; *** ACTIVAR TODAS LAS FILAS PARA DETECTAR LIBERACIÓN ***
     MOVLW   b'00001111'         ; Activa todas las filas
     MOVWF   PORTB
-    NOP
+    NOP	
     NOP
     
 WAIT_RELEASE
@@ -239,137 +276,243 @@ WAIT_RELEASE
 ; Restaura registros y sale de interrupción
 ;--------------------------------------------------------------
 ISR_FIN
-    MOVFW   STATUS_TEMP
+    MOVF    STATUS_TEMP,W
     MOVWF   STATUS
-    MOVFW   W_TEMP
+    MOVF    W_TEMP,W
     RETFIE
 
 ;==============================================================
 ; RUTINA ADC (actualiza ADC)
 ;==============================================================
-ADC_READ
-    NOP
-    NOP
-    NOP
-    NOP
-    NOP     ; ~5 us
-    BANKSEL ADCON0
-    BSF	    ADCON0, GO_DONE
+  ADC_READ
+    ; ESPERA DE ADQUISICION (TACQ >= 20us)
+    MOVLW   D'50'              ; 50 ciclos ~ 20us
+    MOVWF   TEMP1
+ACQ_LOOP
+    DECFSZ  TEMP1,F
+    GOTO    ACQ_LOOP
+
+    ; COMENZAR CONVERSION
+    BSF     ADCON0,GO_DONE
 
 WAIT_ADC
     BTFSC   ADCON0,GO_DONE
     GOTO    WAIT_ADC
+
     BANKSEL ADRESH
-    MOVF    ADRESH,W
-RETURN
+    MOVF    ADRESH,W           ; LECTURA (JUSTIF IZQ)
+    RETURN
 ;==============================================================
 ; RUTINA Transformacion a UNI,DEC y CEN 
 ;==============================================================
 ADC_TRANS
     BANKSEL ADRESH
-    MOVF   ADRESH,W
-    MOVWF  TEMP1
-    CLRF   CEN
-    CLRF   DECS
+    MOVF    ADRESH,W
+    MOVWF   TEMP1       ; número 0?255
 
-; -------- CENTENAS ---------
+    CLRF    CEN
+    CLRF    DECS
+
+; -------- CENTENAS (100) ---------
 CENT_LOOP
-    MOVLW  D'100'
-    SUBWF  TEMP1,F
-    BTFSS  STATUS,C
-    GOTO   FIX_CENT
-    INCF   CEN,F
-    GOTO   CENT_LOOP
+    MOVLW   D'100'
+    SUBWF   TEMP1,F
+    BTFSS   STATUS,C    ; ¿fue negativa?
+    GOTO    FIX_CENT
+    INCF    CEN,F
+    GOTO    CENT_LOOP
 
 FIX_CENT
-    MOVLW  d'100'
-    ADDWF  TEMP1,F
+    MOVLW   D'100'
+    ADDWF   TEMP1,F      ; restaurar TEMP1
+    ; aquí NO se incrementa CEN
+    ; sigue a decenas
 
-; -------- DECENAS ---------
+; -------- DECENAS (10) ---------
 DEC_LOOP
-    MOVLW  d'10'
-    SUBWF  TEMP1,F
-    BTFSS  STATUS,C
-    GOTO   FIX_DEC
-    INCF   DECS,F
-    GOTO   DEC_LOOP
+    MOVLW   D'10'
+    SUBWF   TEMP1,F
+    BTFSS   STATUS,C
+    GOTO    FIX_DEC
+    INCF    DECS,F
+    GOTO    DEC_LOOP
 
 FIX_DEC
-    MOVLW  d'10'
-    ADDWF  TEMP1,F
+    MOVLW   D'10'
+    ADDWF   TEMP1,F      ; restaurar TEMP1
 
 ; -------- UNIDADES --------
-    MOVF   TEMP1,W
-    MOVWF  UNI
+    MOVF    TEMP1,W      ; el resto final
+    MOVWF   UNI
     RETURN
 ;==============================================================
-; RUTINA COMPARACION ADC 
+; RUTINA COMPARACION ADC - BARGRAPH
 ;==============================================================
 MAXdB_COMP
-    BCF    PORTA,1
-    BCF	   PORTA,2
-    BCF	   PORTA,3
-    BCF	   PORTA,4
-    BCF	   PORTA,5
-    BCF	   PORTA,6
-    BANKSEL ADRESH
-    MOVF    ADRESH,W
-    BANKSEL MAXdB
-    SUBWF   MAXdB,F
-    BTFSS   STATUS,C
-    BSF	    PORTA,1 
-RETURN
+    ; limpiar LEDs
+    BANKSEL PORTA
+    BCF PORTA,4     ; LED max
+    BCF PORTA,2     ; LED min
+    BANKSEL PORTC
+    BCF PORTC,0
+    BCF PORTC,1
+    BCF PORTC,2
+    BCF PORTC,3
+    BCF	STATUS,C
+
+    ; copiar MAX_dB
+    MOVF MAX_dB,W
+    MOVWF TEMP1
+
+
+;-------------------------------
+; LED MAX (A4)
+    MOVF ADRESH,W
+    SUBWF TEMP1,W
+    BTFSS STATUS,C
+    BSF PORTA,4
+    BCF	STATUS,C
+
+
+;-------------------------------
+; LED C0 (C0)
+    MOVLW .20
+    SUBWF TEMP1,F
+    MOVF ADRESH,W
+    SUBWF TEMP1,W
+    BTFSS STATUS,C
+    BSF PORTC,0
+    BCF	STATUS,C
+
+
+;-------------------------------
+; LED C1 (C1)
+    MOVLW .20
+    SUBWF TEMP1,F
+    MOVF ADRESH,W
+    SUBWF TEMP1,W
+    BTFSS STATUS,C
+    BSF PORTC,1
+    BCF	STATUS,C
+
+
+;-------------------------------
+; LED C2 (C2)
+    MOVLW .20
+    SUBWF TEMP1,F
+    MOVF ADRESH,W
+    SUBWF TEMP1,W
+    BTFSS STATUS,C
+    BSF PORTC,2
+    BCF	STATUS,C
+
+
+;-------------------------------
+; LED C3 (C3)
+    MOVLW .20
+    SUBWF TEMP1,F
+    MOVF ADRESH,W
+    SUBWF TEMP1,W
+    BTFSS STATUS,C
+    BSF PORTC,3
+    BCF	STATUS,C
+
+;-------------------------------
+; LED MIN (A2)
+    MOVLW .20
+    SUBWF TEMP1,F
+    MOVF ADRESH,W
+    SUBWF TEMP1,W
+    BTFSS STATUS,C
+    BSF PORTA,2
+    BCF	STATUS,C
+    
+    RETURN
+
 ;==============================================================
 ; RUTINA MUESTREO (actualiza displays o salidas)
 ;==============================================================
 MUESTREO
+    BANKSEL PORTE
     BSF	    PORTE,0
     BCF	    PORTE,1
     BCF	    PORTE,2
+    BCF	    PORTA,5
     MOVF    UNI,W
-    CALL    TABLA_TECL
     MOVWF   PORTD
     CALL    DELAY_2ms
 
     BCF	    PORTE,0
     BSF	    PORTE,1
     BCF	    PORTE,2
+    BCF	    PORTA,5
     MOVF    DECS,W
-    CALL    TABLA_TECL
     MOVWF   PORTD
     CALL    DELAY_2ms
 
     BCF	    PORTE,0
     BCF	    PORTE,1
-    BSF	    PORTE,2
+    BCF	    PORTE,2
+    BSF	    PORTA,5
     MOVF    CEN,W
-    CALL    TABLA_TECL
     MOVWF   PORTD
     CALL    DELAY_2ms
-    RETURN
+    
+    BCF	    PORTE,0
+    BCF	    PORTE,1
+    BSF	    PORTE,2
+    BCF	    PORTA,5
+    MOVLW   b'11011110'
+    MOVWF   PORTD
+    CALL    DELAY_2ms
+    
+RETURN
 
+;==============================================================
+; TABLA DE CONVERSIÓN PARA MAX_dB
+;==============================================================
+TABLA_MAXdB
+    ; ? Asegura que no cruces páginas
+    MOVLW   HIGH TABLA_MAXdB
+    MOVWF   PCLATH
+    MOVF    TEMP1,W
+    ADDWF PCL,F
+    RETLW .120  ; 0
+    RETLW .128  ; 1
+    RETLW .136  ; 2
+    RETLW .144  ; 3
+    RETLW .152  ; 4
+    RETLW .160  ; 5
+    RETLW .168  ; 6
+    RETLW .176  ; 7
+    RETLW .192  ; 8
+    RETLW .200  ; 9
+    RETLW .208  ; A
+    RETLW .216  ; B
+    RETLW .224  ; C
+    RETLW .232  ; D
+    RETLW .240  ; E
+    RETLW .250  ; F
+    
 ;==============================================================
 ; TABLA DE CONVERSIÓN PARA DISPLAY 7 SEGMENTOS
 ;==============================================================
 TABLA_TECL
+     ; ? Asegura que no cruces páginas
+    MOVLW   HIGH TABLA_MAXdB
+    MOVWF   PCLATH
     ADDWF PCL,F
-    RETLW .20  ; 0
-    RETLW .25  ; 1
-    RETLW .30  ; 2
-    RETLW .35  ; 3
-    RETLW .40  ; 4
-    RETLW .45  ; 5
-    RETLW .50  ; 6
-    RETLW .55  ; 7
-    RETLW .60  ; 8
-    RETLW .65  ; 9
-    RETLW .70  ; A
-    RETLW .75  ; B
-    RETLW .80  ; C
-    RETLW .85  ; D
-    RETLW .90  ; E
-    RETLW .95  ; F
-
+    RETLW b'00111111'  ; 0
+    RETLW b'00000110'  ; 1
+    RETLW b'01011011'  ; 2
+    RETLW b'01001111'  ; 3
+    RETLW b'01100110'  ; 4
+    RETLW b'01101101'  ; 5
+    RETLW b'01111101'  ; 6
+    RETLW b'00000111'  ; 7
+    RETLW b'01111111'  ; 8
+    RETLW b'01101111'  ; 9
+    RETURN
 ;==============================================================
 ; DELAYS
 ;==============================================================
@@ -400,5 +543,4 @@ LOOP2_20ms
     DECFSZ  DELAY1_20ms, F
     GOTO    LOOP1_20ms
     RETURN
-
 END
